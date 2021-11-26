@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Університетський проект",
   "main": "index.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && cd server && npm install && cd ../client && npm install --save-dev && npm run build",
