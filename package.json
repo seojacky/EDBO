@@ -1,0 +1,25 @@
+{
+  "name": "edbo",
+  "version": "1.0.0",
+  "description": "Університетський проект",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install && cd server && npm install && cd ../client && npm install --save-dev && npm run build",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lenaGrigor/EDBO.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lenaGrigor/EDBO/issues"
+  },
+  "homepage": "https://github.com/lenaGrigor/EDBO#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "serve-static": "^1.14.1"
+  }
+}
