@@ -7,7 +7,7 @@ const app = express();
 
 app.use('/api', apiRouter);
 app.use('/', serveStatic(path.join(__dirname, '/client/dist')))
-app.get('/.*/', function (req, res) {
+app.get(/.*/, function (req, res) {
     res.sendFile(__dirname + '/client/dist/index.html');
 });
 
