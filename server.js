@@ -6,7 +6,7 @@ const apiRouter = require('./server/src/routes/apiRouter');
 const app = express();
 
 app.use('/api', apiRouter);
-app.use('/', serveStatic(path.join(__dirname, '/client/dist')))
+app.use('/', serveStatic(path.join(__dirname, 'client/dist')))
 app.get(/.*/, function (req, res) {
     res.sendFile(__dirname + '/client/dist/index.html');
 });
@@ -14,7 +14,7 @@ app.get(/.*/, function (req, res) {
 const start = () => {
   try {
     // Add connection to DB
-    app.listen(8080, () => {
+    app.listen(process.env.PORT || 8080, () => {
       console.log('Server is running');
     });
   } catch (error) {
