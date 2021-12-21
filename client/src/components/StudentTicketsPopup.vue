@@ -75,8 +75,10 @@ export default {
   padding: 30px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -45%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 .popup .btn-download, .popup .btn-close {
   width: calc(50% - 40px);

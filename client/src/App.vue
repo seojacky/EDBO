@@ -6,7 +6,7 @@
           <img src="./assets/images/main_logo.png" />
         </figure>
       </router-link>
-      <router-link to="/">
+      <router-link to="/login">
         <h3>Увійти в систему</h3>
       </router-link>
     </header>
@@ -39,6 +39,7 @@ export default {
     padding-bottom: 30px;
     min-height: calc(100vh - 100px);
     background-color: #E8F4FA;
+    overflow-x: hidden;
   }
   header {
     position: fixed;

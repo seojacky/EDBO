@@ -128,6 +128,7 @@ export default {
   
 <style>
 .teacher-certificates h1 {
+  width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
@@ -141,14 +142,14 @@ export default {
   margin: 0;
   font-weight: lighter;
 }
-select {
+.teacher-certificates select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-select:focus {
+.teacher-certificates select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;

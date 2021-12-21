@@ -1,11 +1,34 @@
 <template>
-  <div class="student-tickets">
-    <h1>Реєстр студентських (учнівських) квитків</h1> 
+  <div class="education-documents">
+    <h1>Реєстр документів про освіту</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані студентського (учнівського) квитка</h3>
-      <select v-model="documentType">
-        <option>Студентський квиток</option>
-        <option>Учнівський квиток</option>
+      <h3>Дані документа про освіту</h3>
+      <select v-model="educationType" v-on:change="handleSelect">
+        <option>Документи про вищу освіту</option>
+        <option>Документи про професійну (професійно-технічну) освіту</option>
+        <option>Документи про загальну середню освіту</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
+        <option>Диплом МАГІСТРА</option>
+        <option>Диплом СПЕЦІАЛІСТА</option>
+        <option>Диплом БАКАЛАВРА</option>
+        <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
+        <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
+        <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
+        <option>Свідоцтво про визнання іноземного документа про освіту</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
+        <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
+        <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
+        <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
+        <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
+        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
+        <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
+        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
+        <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
+        <option></option>
       </select>
       <div class="ticket-info">
         <label>Серія*</label>
@@ -40,23 +63,26 @@
         </div>
         <input type="checkbox" v-on:click="handleCheckboxClick" />
         <label>Підтверджую, по батькові відсутнє</label>
+        <label>Дата народження</label>
+        <input type="date" class="valid" ref="dateInput" v-model="date" />
         <h5>* обов'язкові поля</h5>
         <input type="submit" value="Пошук" />
       </div>
     </form>
-    <StudentTicketsPopup :isPopup="isPopup" @popup="updatePopup" />
+    <EducationDocumentsPopup :isPopup="isPopup" @popup="updatePopup" />
   </div>
 </template>
 
 <script>
 import Validation from './../assets/validation.js'
-import StudentTicketsPopup from './StudentTicketsPopup.vue'
+import EducationDocumentsPopup from './EducationDocumentsPopup.vue'
 
 export default {
-  name: 'StudentTickets',
+  name: 'EducationDocuments',
   data() {
     return {
-      documentType: 'Студентський квиток',
+      educationType: 'Документи про вищу освіту',
+      documentType: 'Диплом МАГІСТРА',
       checkLastName: false,
       lastName: null,
       isLastNameValid: false,
@@ -72,11 +98,12 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
+      date: null,
       isPopup: false
     }
   },
   components: {
-    StudentTicketsPopup
+    EducationDocumentsPopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -141,6 +168,15 @@ export default {
         this.isPopup = true;
       }
     },
+    handleSelect() {
+      if (this.educationType === 'Документи про вищу освіту') {
+        this.documentType = 'Диплом МАГІСТРА';
+      } else if (this.educationType === 'Документи про професійну (професійно-технічну) освіту') {
+        this.documentType = 'Диплом КВАЛІФІКОВАНОГО РОБІТНИКА';
+      } else if (this.educationType === 'Документи про загальну середню освіту') {
+        this.documentType = 'СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)';
+      }
+    },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
@@ -150,71 +186,74 @@ export default {
 </script>
   
 <style>
-.student-tickets h1 {
+.education-documents h1 {
   width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
   padding: 10px;
 }
-.student-tickets h3 {
+.education-documents h3 {
   margin: 0;
   padding: 10px 0;
 }
-.student-tickets h5 {
+.education-documents h5 {
   margin: 0;
   font-weight: lighter;
 }
-.student-tickets select {
+.education-documents select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-.student-tickets select:focus {
+.education-documents select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;
 }
-.student-tickets .error {
+.education-documents .error {
   color: red;
   font-size: 12px;
   margin-top: -15px;
 }
-.student-tickets .error-container {
+.education-documents .error-container {
   height: 30px;
 }
-.student-tickets .error-container .error {
+.education-documents .error-container .error {
   margin-top: 0px;
 }
-.student-tickets input:not([type="submit"]) {
+.education-documents input:not([type="submit"]) {
   margin-top: 5px;
   padding: 3px;
 }
-.student-tickets .person-info input {
+.education-documents .person-info input {
   margin-bottom: 15px;
 }
-.student-tickets .person-info {
+.education-documents .person-info {
   margin-bottom: 15px;
 }
-.student-tickets input:not([type="submit"]):focus {
+.education-documents .person-info label:last-of-type {
+  display: block;
+}
+.education-documents input:not([type="submit"]):focus {
   outline: none;
   padding: 2px;
 }
-.student-tickets .valid {
+.education-documents .valid {
   border: 1px solid grey;
 }
-.student-tickets .valid:focus {
+.education-documents .valid:focus {
   border: 2px solid #005F97;
 }
-.student-tickets .invalid {
+.education-documents .invalid {
   border: 1px solid salmon;
 }
-.student-tickets .invalid:focus {
+.education-documents .invalid:focus {
   border: 2px solid red;
 }
-.student-tickets form {
+.education-documents form {
   width: 350px;
   background-color: white;
   padding: 30px;
@@ -224,26 +263,26 @@ export default {
   transform: translateX(-50%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.student-tickets .ticket-info {
+.education-documents .ticket-info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
-.student-tickets .ticket-info input:first-of-type {
+.education-documents .ticket-info input:first-of-type {
   width: 50px;
 }
-.student-tickets .ticket-info input:last-of-type {
+.education-documents .ticket-info input:last-of-type {
   width: 170px;
 }
-.student-tickets .person-info input:not([type="checkbox"]) {
+.education-documents .person-info input:not([type="checkbox"]) {
   width: 100%;
   box-sizing: border-box;
 }
-.student-tickets .person-info input[type="checkbox"] {
+.education-documents .person-info input[type="checkbox"] {
   margin-right: 10px;
 }
-.student-tickets input[type="submit"] {
+.education-documents input[type="submit"] {
   color: white;
   background-color: #005F97;
   border: none;
@@ -252,7 +291,7 @@ export default {
   font-size: 20px;
   margin: 10px 0;
 }
-.student-tickets input[type="submit"]:hover {
+.education-documents input[type="submit"]:hover {
   background-color: #004C79;
   cursor: pointer;
 }

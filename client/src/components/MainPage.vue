@@ -39,19 +39,19 @@ export default {
   name: 'MainPage',
   methods: {
     handleEducationDocumentsClick() {
-      this.$router.push({ path: '/education-documents' })
+      this.$router.push({ path: '/education-documents' });
     },
     handleSudentTicketsClick() {
-      this.$router.push({ path: '/student-tickets' })
+      this.$router.push({ path: '/student-tickets' });
     },
     handleZnoCertificatesClick() {
-      this.$router.push({ path: '/zno-certificates' })
+      this.$router.push({ path: '/zno-certificates' });
     },
     handleEducationalActivitySubjectsClick() {
-      this.$router.push({ path: '/educational-activity-subjects' })
+      this.$router.push({ path: '/educational-activity-subjects' });
     },
     handleTeacherCertificatesClick() {
-      this.$router.push({ path: '/teacher-certificates' })
+      this.$router.push({ path: '/teacher-certificates' });
     }
   }
 }
