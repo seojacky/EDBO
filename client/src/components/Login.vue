@@ -2,12 +2,15 @@
   <div class="login">
     <form method="GET" v-on:submit="handleSubmitForm">
       <h2>Вхід в систему</h2>
+      <label>Логін</label>
       <input type="text" v-model="login" />
+      <label>Пароль</label>
       <input type="password" v-model="password" />
       <div class="error" v-if="error">
         {{error}}
       </div>
       <input type="submit" value="Увійти" />
+      <h5>Ще не зареєстровані? <u v-on:click="handleLinkClick">Надіслати запит</u> на отримання логіну та паролю</h5>
     </form>
   </div>
 </template>
@@ -28,6 +31,9 @@ export default {
       if (!this.error) {
         this.$router.push({ path: '/administartor' });
       }
+    },
+    handleLinkClick() {
+      this.$router.push({ path: '/registration-request' });
     }
   }
 }
@@ -83,6 +89,17 @@ export default {
 }
 .login input[type="submit"]:hover {
   background-color: #004C79;
+  cursor: pointer;
+}
+.login h5 {
+  margin: 0;
+  padding: 10px 0;
+  text-align: center;
+}
+.login u {
+  color: #005F97;
+}
+.login u:hover {
   cursor: pointer;
 }
 </style>

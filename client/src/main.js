@@ -3,6 +3,7 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import MainPage from './components/MainPage.vue'
 import Login from './components/Login.vue'
+import RegistrationRequest from './components/RegistrationRequest.vue'
 import AdministratorPage from './components/AdministratorPage.vue'
 import EducationDocuments from './components/EducationDocuments.vue'
 import StudentTickets from './components/StudentTickets.vue'
@@ -23,6 +24,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/registration-request',
+    name: 'RegistrationRequest',
+    component: RegistrationRequest
   },
   {
     path: '/administartor',
