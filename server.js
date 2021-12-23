@@ -7,19 +7,19 @@ const app = express();
 
 app.use('/api', apiRouter);
 app.use('/', serveStatic(path.join(__dirname, 'client/dist')))
-app.get(/.*/, function (req, res) {
+app.get(/.*/, function(req, res) {
     res.sendFile(__dirname + '/client/dist/index.html');
 });
 
 const start = () => {
-  try {
-    // Add connection to DB
-    app.listen(process.env.PORT || 8080, () => {
-      console.log('Server is running');
-    });
-  } catch (error) {
-    console.log(`Error on server setup: ${error}`)
-  }
+    try {
+        // Add connection to DB
+        app.listen(process.env.PORT || 8080, () => {
+            console.log('Server is running');
+        });
+    } catch (error) {
+        console.log(`Error on server setup: ${error}`)
+    }
 }
 
 start();
