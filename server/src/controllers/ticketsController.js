@@ -1,12 +1,7 @@
-const getOneTicket = require('../services/authService')
+const getOneTicket = require('../services/ticketsService')
 
 const getTicket = async(req, res) => {
-    const type = req.query.type;
-    const series = req.query.series;
-    const number = req.query.number;
-    const name = req.query.name;
-    const surname = req.query.surname;
-    const patronymic = req.query.patronymic;
+    const { type, series, number, name, surname, patronymic } = req.query;
 
     ticket = await getOneTicket(type, series, number, name, surname, patronymic);
     console.log(ticket);
