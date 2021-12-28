@@ -152,7 +152,7 @@ export default {
       isLastNameValid: true,
       checkFirstName: false,
       firstName: 'Ім\'я',
-      isFirstNameValid: true,
+      isFirstNameValid: false,
       checkFatherName: false,
       fatherName: 'По-Батькові',
       isFatherNameValid: true,

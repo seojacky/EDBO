@@ -53,25 +53,9 @@
           </li>
         </div>
       </ul>
-      <!-- <ul ref="administartorMenu" v-on:mouseover="handleMouseover" v-on:mouseleave="handleMouseleave">
-        <li>
-          <router-link to="/administartor">
-            <h3>Адміністратор</h3>
-          </router-link>
-        </li>
-        <div ref="submenu" class="submenu">
-        <li>
-          <router-link to="/journal">
-            <h4>Запити на набуття ролі<br/>реєстратора</h4>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/journal">
-            <h4>Журнал дій реєстраторів</h4>
-          </router-link>
-        </li>
-        </div>
-      </ul> -->
+      <router-link to="/administartor">
+        <h3>Адміністратор</h3>
+      </router-link>
       <router-link to="/login">
         <h3>Увійти в систему</h3>
       </router-link>

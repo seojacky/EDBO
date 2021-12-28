@@ -4,7 +4,9 @@ import VueRouter from 'vue-router'
 import MainPage from './components/MainPage.vue'
 import Login from './components/Login.vue'
 import RegistrationRequest from './components/RegistrationRequest.vue'
+import RegistratorUpdate from './components/RegistratorUpdate.vue'
 import AdministratorPage from './components/AdministratorPage.vue'
+import Journal from './components/Journal.vue'
 import EducationDocuments from './components/EducationDocuments.vue'
 import StudentTickets from './components/StudentTickets.vue'
 import ZnoCertificates from './components/ZnoCertificates.vue'
@@ -43,9 +45,20 @@ const routes = [
     component: RegistrationRequest
   },
   {
+    path: '/registrator-update',
+    name: 'RegistratorUpdate',
+    component: RegistratorUpdate,
+    props: true
+  },
+  {
     path: '/administartor',
     name: 'AdministratorPage',
     component: AdministratorPage
+  },
+  {
+    path: '/journal',
+    name: 'Journal',
+    component: Journal
   },
   {
     path: '/education-documents',

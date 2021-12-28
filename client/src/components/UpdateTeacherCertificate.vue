@@ -111,7 +111,7 @@ export default {
       isFirstNameValid: true,
       checkFatherName: false,
       fatherName: 'По-Батькові',
-      isFatherNameValid: true,
+      isFatherNameValid: false,
       checkNumber: false,
       number: '12348765',
       isNumberValid: true,

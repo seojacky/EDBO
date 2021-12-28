@@ -148,7 +148,7 @@ export default {
       isFirstNameValid: true,
       checkFatherName: false,
       fatherName: 'По-Батькові',
-      isFatherNameValid: true,
+      isFatherNameValid: false,
       checkSeries: false,
       series: 'АА',
       isSeriesValid: true,
