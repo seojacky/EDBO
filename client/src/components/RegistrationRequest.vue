@@ -78,12 +78,14 @@
           <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
             {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
           </div> 
+          <input type="checkbox" v-on:click="handleTaxCheckboxClick" />
+          <label>Підтверджую, реєстраційний номер відсутній</label>
           <h5>* обов'язкові поля</h5>
-          <h5>** на пошту будуть надіслані логін і пароль після<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;підтвердження Вашого запиту, або повідомлення про<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;відхилення Вашого запиту</h5>
+          <h5>** на пошту будуть надіслані логін і пароль після підтвердження<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Вашого запиту, або повідомлення про відхилення Вашого запиту</h5>
         </div>
       </div>
       <input type="submit" value="Надіслати запит" />
-      <input type="button" value="Скасувати" />
+      <input type="button" value="Скасувати" v-on:click="handleCancelClick" />
     </form>
     <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Ваш запит опрацьовується. На вказану Вами пошту буде надіслано логін та пароль після підтвердження Вашого запиту, або повідомлення про відхилення Вашого запиту." />
   </div>
@@ -183,12 +185,22 @@ export default {
     },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
+        this.$refs.passportSeriesInput.disabled = false;
+      } else {
         this.passportSeries = null;
         this.checkPassportSeries = false;
         this.$refs.passportSeriesInput.className = 'valid';
-        this.$refs.passportSeriesInput.disabled = false;
-      } else {
         this.$refs.passportSeriesInput.disabled = true;
+      }
+    },
+    handleTaxCheckboxClick() {
+      if (!this.$refs.taxNumberInput.disabled) {
+        this.taxNumber = null;
+        this.checkTaxNumber = false;
+        this.$refs.taxNumberInput.className = 'valid';
+        this.$refs.taxNumberInput.disabled = true;
+      } else {
+        this.$refs.taxNumberInput.disabled = false;
       }
     },
     validateInputName(field, name, elementName) {
@@ -223,7 +235,8 @@ export default {
       return message;
     },
     validateInputPassportNumber(field, number, elementName) {
-      const message = Validation.validatePassportNumber(field, number, this.$refs[elementName]);
+      const amount = this.$refs.passportSeriesInput.disabled ? 9 : 6;
+      const message = Validation.validatePassportNumber(field, number, this.$refs[elementName], amount);
       this.isPassportNumberValid = message ? false : true;
       return message;
     },
@@ -251,7 +264,6 @@ export default {
       this.checkPassportNumber = true;
       this.checkPassportOrganization = true;
       this.checkPassportDate = true;
-      this.checkTaxNumber = true;
       this.checkEmail = true;
       if (!this.$refs.fatherNameInput.disabled) {
         this.checkFatherName = true;
@@ -263,12 +275,20 @@ export default {
       } else {
         this.isPassportSeriesValid = true;
       }
+      if (!this.$refs.taxNumberInput.disabled) {
+        this.checkTaxNumber = true;
+      } else {
+        this.isTaxNumberValid = true;
+      }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isDateOfBirthValid && this.isPositionValid && this.isEmailValid
         && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
         && this.isPassportSeriesValid && this.isTaxNumberValid ) {
         this.isPopup = true;
       }
+    },
+    handleCancelClick() {
+      this.$router.push('/login');
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
@@ -293,6 +313,7 @@ export default {
 .registration-request h5 {
   margin: 0;
   font-weight: lighter;
+  font-size: 11px;
 }
 .registration-request form {
   width: 730px;

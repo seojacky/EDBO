@@ -1,6 +1,6 @@
 <template>
   <div class="student-tickets">
-    <h1>Реєстр студентських (учнівських) квитків</h1> 
+    <h1>Пошук даних для редагування у Реєстрі студентських (учнівських) квитків</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані студентського (учнівського) квитка</h3>
       <select v-model="documentType">
@@ -44,13 +44,11 @@
         <input type="submit" value="Пошук" >
       </div>
     </form>
-    <StudentTicketsPopup :isPopup="isPopup" @popup="updatePopup" />
   </div>
 </template>
 
 <script>
 import Validation from './../assets/validation.js'
-import StudentTicketsPopup from './StudentTicketsPopup.vue'
 
 export default {
   name: 'StudentTickets',
@@ -74,9 +72,6 @@ export default {
       isNumberValid: false,
       isPopup: false
     }
-  },
-  components: {
-    StudentTicketsPopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -138,10 +133,7 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isSeriesValid && this.isNumberValid) {
-        // fetch('/api/tickets/ticket',
-        // {method: 'GET', headers: {'Content-Type': 'application/json'}})
-        //  .then(response => console.log(response.json()))
-        this.isPopup = true;
+        this.$router.push({ path: '/update-student-ticket' })
       }
     },
     updatePopup(isPopup) {

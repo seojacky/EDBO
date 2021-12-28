@@ -10,6 +10,18 @@ import StudentTickets from './components/StudentTickets.vue'
 import ZnoCertificates from './components/ZnoCertificates.vue'
 import EducationalActivitySubjects from './components/EducationalActivitySubjects.vue'
 import TeacherCertificates from './components/TeacherCertificates.vue'
+import AddStudentTicket from './components/AddStudentTicket.vue'
+import AddTeacherCertificate from './components/AddTeacherCertificate.vue'
+import AddEducationDocument from './components/AddEducationDocument.vue'
+import AddZnoCertificate from './components/AddZnoCertificate.vue'
+import UpdateStudentTicket from './components/UpdateStudentTicket.vue'
+import UpdateTeacherCertificate from './components/UpdateTeacherCertificate.vue'
+import UpdateEducationDocument from './components/UpdateEducationDocument.vue'
+import UpdateZnoCertificate from './components/UpdateZnoCertificate.vue'
+import UpdateSearchStudentTicket from './components/UpdateSearchStudentTicket.vue'
+import UpdateSearchTeacherCertificate from './components/UpdateSearchTeacherCertificate.vue'
+import UpdateSearchEducationDocument from './components/UpdateSearchEducationDocument.vue'
+import UpdateSearchZnoCertificate from './components/UpdateSearchZnoCertificate.vue'
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -59,6 +71,66 @@ const routes = [
     path: '/teacher-certificates',
     name: 'TeacherCertificates',
     component: TeacherCertificates
+  },
+  {
+    path: '/add-student-ticket',
+    name: 'AddStudentTicket',
+    component: AddStudentTicket
+  },
+  {
+    path: '/add-teacher-certificate',
+    name: 'AddTeacherCertificate',
+    component: AddTeacherCertificate
+  },
+  {
+    path: '/add-education-document',
+    name: 'AddEducationDocument',
+    component: AddEducationDocument
+  },
+  {
+    path: '/add-zno-certificate',
+    name: 'AddZnoCertificate',
+    component: AddZnoCertificate
+  },
+  {
+    path: '/update-student-ticket',
+    name: 'UpdateStudentTicket',
+    component: UpdateStudentTicket
+  },
+  {
+    path: '/update-teacher-certificate',
+    name: 'UpdateTeacherCertificate',
+    component: UpdateTeacherCertificate
+  },
+  {
+    path: '/update-education-document',
+    name: 'UpdateEducationDocument',
+    component: UpdateEducationDocument
+  },
+  {
+    path: '/update-zno-certificate',
+    name: 'UpdateZnoCertificate',
+    component: UpdateZnoCertificate
+  },
+  {
+    path: '/update-search-student-ticket',
+    name: 'UpdateSearchStudentTicket',
+    component: UpdateSearchStudentTicket
+  },
+  {
+    path: '/update-search-teacher-certificate',
+    name: 'UpdateSearchTeacherCertificate',
+    component: UpdateSearchTeacherCertificate
+  },
+  {
+    path: '/update-search-education-document',
+    name: 'UpdateSearchEducationDocument',
+    component: UpdateSearchEducationDocument
+  },
+  {
+    path: '/update-search-zno-certificate',
+    name: 'UpdateSearchZnoCertificate',
+    component: UpdateSearchZnoCertificate
   },
 ]
 

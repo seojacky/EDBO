@@ -7,8 +7,6 @@ const Validation = {
         message: `Поле "${field}" не може бути пустим`
       }
     } else if (name.length < 2) {
-    console.log(name.length)
-
       element.className = 'invalid';
       return {
         message: `Поле "${field}" має містити не менше двох символів`
@@ -106,7 +104,7 @@ const Validation = {
       return null;
     }
   },
-  validatePassportNumber: function (field, number, element) {
+  validatePassportNumber: function (field, number, element, amount) {
     const numbers = /^[0-9]+$/;
     if (!number) {
       element.className = 'invalid';
@@ -118,10 +116,10 @@ const Validation = {
       return {
         message: `"${field}" може містити лише цифри`
       }
-    } else if (number.length !== 9) {
+    } else if (number.length !== amount) {
       element.className = 'invalid';
       return {
-        message: `Поле "${field}" має містити 9 цифр`
+        message: `Поле "${field}" має містити ${amount} цифр`
       }
     } else {
       element.className = 'valid';
@@ -183,8 +181,43 @@ const Validation = {
       }
     }
   },
-  validateNotEmpty: function (field, job, element) {
-    if (job) {
+  validateDateRange: function (startDate, element1, endDate, element2) {
+    if (startDate && endDate) {
+      element1.className = 'valid';
+      element2.className = 'valid';
+      return {
+        message: null,
+        field1: true,
+        field2: true
+      }
+    } else if (!startDate && !endDate) {
+      element1.className = 'invalid';
+      element2.className = 'invalid';
+      return {
+        message: `Поля не можуть бути пустим`,
+        field1: false,
+        field2: false
+      }
+    } else if (!startDate) {
+      element1.className = 'invalid';
+      element2.className = 'valid';
+      return {
+        message: `Перше поле не може бути пустим`,
+        field1: false,
+        field2: true
+      }
+    } else if (!endDate) {
+      element1.className = 'valid';
+      element2.className = 'invalid';
+      return {
+        message: `Друге поле не може бути пустим`,
+        field1: true,
+        field2: false
+      }
+    }
+  },
+  validateNotEmpty: function (field, value, element) {
+    if (value) {
       element.className = 'valid';
       return null;
     } else {
