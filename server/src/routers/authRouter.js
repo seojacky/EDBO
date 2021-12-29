@@ -1,5 +1,8 @@
+const { loginUser, registerUser } = require('../controllers/authController')
+const router = require('express').Router();
+const asyncWrapper = require('../utils/apiUtils');
 
+router.post('/login', asyncWrapper(loginUser));
+router.post('/register', asyncWrapper(registerUser));
 
-router.post('/login', asyncWrapper(async (req, res) => {
-
-}));
+module.exports = router

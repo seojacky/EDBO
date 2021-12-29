@@ -1,34 +1,43 @@
-class NodeCourseError extends Error {
-    constructor (message) {
+class NodeError extends Error {
+    constructor(message) {
         super(message);
         this.status = 500;
     }
 }
 
-class LoginError extends NodeCourseError {
-    constructor (message = 'Login error') {
+class LoginError extends NodeError {
+    constructor(message = 'Login error') {
         super(message);
         this.status = 400;
     }
 }
 
-class RoleError extends NodeCourseError {
-    constructor (message = 'Must be another role') {
+class RoleError extends NodeError {
+    constructor(message = 'Must be another role') {
         super(message);
         this.status = 400;
     }
 }
 
-class InvalidRequestError extends NodeCourseError {
-    constructor (message = 'Invalid request') {
+class InvalidRequestError extends NodeError {
+    constructor(message = 'Invalid request') {
         super(message);
         this.status = 400;
     }
 }
+
+class SqlError extends NodeError {
+    constructor(message = 'SQL error') {
+        super(message);
+        this.status = 400;
+    }
+}
+
 
 module.exports = {
-    NodeCourseError,
+    NodeError,
     LoginError,
     RoleError,
-    InvalidRequestError
+    InvalidRequestError,
+    SqlError
 };
