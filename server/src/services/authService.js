@@ -24,38 +24,35 @@ const getToken = async(username, password) => {
     return token;
 }
 
-const addRegistrator = async(email, name, surname, patronimic, identification_code, series, number, issue_date, authority_code, position, organization_name, birthday_date) => {
+const addRegistrator = async(email, name, surname, patronymic, identification_code, series, number, issue_date, authority_code, position, organization_name, birthday_date) => {
     const password = crypto.randomBytes(10).toString('hex');
     const db_password = await bcrypt.hash(password, 10);
     const username = (email.split('@'))[0];
     try {
         const client = createConnection();
-        const person = await client.query(`SELECT person_id FROM public.persons WHERE series = '${series}' AND number = '${number}'`);
+        let person_id = await getPersonId(series, number)
+        const organization = await client.query(`SELECT organization_id FROM public.organizations WHERE long_name = '${organization_name}'`);
         client.end();
-        const client2 = createConnection();
-        const organization = await client2.query(`SELECT organization_id FROM public.organizations WHERE long_name = '${organization_name}'`);
-        client2.end();
-        if (person.rows[0]) {
-            client3 = createConnection();
-            await client3.query(`INSERT INTO registrars (identification_code, position, person_fk, email, organization_fk, login, password) VALUES ('${identification_code}', '${position}', ${person.rows[0].person_id}, '${email}', ${organization.rows[0].organization_id},'${username}','${db_password}')`)
-            client3.end();
-        } else {
-            await addPerson(name, surname, patronimic, series, number, birthday_date, issue_date, authority_code)
+        if (!person_id) {
+            await addPerson(name, surname, patronymic, series, number, birthday_date, issue_date, authority_code)
+            person_id = await getPersonId(series, number)
         }
-
+        client2 = createConnection();
+        await client3.query(`INSERT INTO registrars (identification_code, position, person_fk, email, organization_fk, login, password) VALUES ('${identification_code}', '${position}', ${person_id}, '${email}', ${organization.rows[0].organization_id},'${username}','${db_password}')`)
+        client2.end();
     } catch (err) {
         return err;
     }
 }
 
-const addPerson = async(name, surname, patronimic, series, number, birthday_date, issue_date, authority_code) => {
+const addPerson = async(name, surname, patronymic, series, number, birthday_date, issue_date, authority_code) => {
     try {
         const client = createConnection();
         const authority = await client.query(`SELECT authority_id FROM public.authorities WHERE code = '${authority_code}'`);
         client.end();
         const client2 = createConnection();
-        await client2.query(`INSERT INTO persons (name, surname, patronimic, series, number, issue_date, birthday_date, authority_fk)` +
-            `VALUES ('${name}', '${surname}', '${patronimic}', '${series}', '${number}', ${issue_date}, ${birthday_date}, ${authority.rows[0].authority_id}`)
+        await client2.query(`INSERT INTO persons (name, surname, patronymic, series, number, issue_date, birthday_date, authority_fk)` +
+            `VALUES ('${name}', '${surname}', '${patronymic}', '${series}', '${number}', ${issue_date}, ${birthday_date}, ${authority.rows[0].authority_id}`)
         client2.end();
     } catch (err) {
         return err;
@@ -63,4 +60,15 @@ const addPerson = async(name, surname, patronimic, series, number, birthday_date
 
 }
 
-module.exports = { getToken, addRegistrator };
+const getPersonId = async(series, number) => {
+    try {
+        const client = createConnection();
+        const person = await client.query(`SELECT person_id FROM public.persons WHERE series = '${series}' AND number = '${number}'`);
+        client.end();
+        return person.rows[0].person_id;
+    } catch (err) {
+        return err;
+    }
+}
+
+module.exports = { getToken, addRegistrator, addPerson, getPersonId };

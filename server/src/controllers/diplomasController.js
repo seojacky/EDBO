@@ -10,7 +10,7 @@ const getDiploma = async(req, res) => {
     diploma.surname = surname;
     diploma.name = name;
     diploma.patronymic = patronymic;
-    res.json(diploma);
+    res.status(200).json(diploma);
 }
 
 const createDiploma = async(req, res) => {

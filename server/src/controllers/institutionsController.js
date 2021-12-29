@@ -9,7 +9,7 @@ const getInstitutions = async(req, res) => {
         console.log(global_type)
         institutions = await getInstitutionsByRegionAndName(region, global_type, name);
     }
-    res.json(institutions);
+    res.status(200).json(institutions);
 }
 
 const createInstitution = async(req, res) => {
