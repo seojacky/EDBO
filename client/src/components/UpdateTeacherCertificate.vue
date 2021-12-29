@@ -9,11 +9,6 @@
           <option>2020</option>
           <option>2019</option>
         </select>
-        <input type="radio" v-model="isActive" value="true" name="radioActive" />
-        <label>Активний</label>
-        <input type="radio" v-model="isActive" value="false" name="radioActive"/>
-        <label>Неактивний</label>
-        <br/>
         <div style="height: 5px"></div>
         <div class="error" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
           {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}

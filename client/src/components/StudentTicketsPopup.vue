@@ -93,13 +93,14 @@ export default {
   padding: 10px;
   margin-right: 20px;
   transition: background-color 0.5s ease-out 50ms;
+  display: none;
 }
 .popup .btn-close {
   background-color: white;
   color: #3C8AB8;
   border: 5px solid #3C8AB8;
   padding: 5px;
-  margin-left: 20px;
+  margin-left: 20px 180px;
   transition: color 0.5s ease-out 50ms, 
               border 0.5s ease-out 50ms;
 }

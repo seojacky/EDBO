@@ -56,7 +56,7 @@
         <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
           {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
         </div>
-        </div>
+      </div>
       <div class="ticket-info">
         <label>Серія*</label>
         <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />

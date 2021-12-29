@@ -46,9 +46,14 @@
               <h4>Додати дані до Реєстру<br/>сертифікатів ЗНО</h4>
             </router-link>
           </li>
-           <li>
+          <li>
             <router-link to="/update-search-zno-certificate">
               <h4>Редагувати дані у Реєстрі<br/>сертифікатів ЗНО</h4>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/add-educational-activity-subject">
+              <h4>Додати дані до Реєстру<br/>суб'єктів освітньої діяльності</h4>
             </router-link>
           </li>
         </div>

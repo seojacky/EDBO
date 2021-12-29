@@ -8,11 +8,6 @@
           <option>Студентський квиток</option>
           <option>Учнівський квиток</option>
         </select>
-        <input type="radio" v-model="isActive" value="true" name="radioActive" />
-        <label>Активний</label>
-        <input type="radio" v-model="isActive" value="false" name="radioActive"/>
-        <label>Неактивний</label>
-        <br/>
         <div style="height: 5px"></div>
         <label>Повна назва закладу освіти</label>
         <input type="text" class="valid" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />

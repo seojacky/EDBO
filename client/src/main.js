@@ -16,6 +16,7 @@ import AddStudentTicket from './components/AddStudentTicket.vue'
 import AddTeacherCertificate from './components/AddTeacherCertificate.vue'
 import AddEducationDocument from './components/AddEducationDocument.vue'
 import AddZnoCertificate from './components/AddZnoCertificate.vue'
+import AddEducationalActivitySubject from './components/AddEducationalActivitySubject'
 import UpdateStudentTicket from './components/UpdateStudentTicket.vue'
 import UpdateTeacherCertificate from './components/UpdateTeacherCertificate.vue'
 import UpdateEducationDocument from './components/UpdateEducationDocument.vue'
@@ -104,6 +105,11 @@ const routes = [
     path: '/add-zno-certificate',
     name: 'AddZnoCertificate',
     component: AddZnoCertificate
+  },
+  {
+    path: '/add-educational-activity-subject',
+    name: 'AddEducationalActivitySubject',
+    component: AddEducationalActivitySubject
   },
   {
     path: '/update-student-ticket',
