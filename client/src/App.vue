@@ -6,7 +6,7 @@
           <img src="./assets/images/main_logo.png" />
         </figure>
       </router-link>
-      <ul ref="registartorMenu" v-on:mouseover="handleMouseover" v-on:mouseleave="handleMouseleave">
+      <ul ref="registartorMenu" v-on:mouseover="handleMouseover" v-on:mouseleave="handleMouseleave" v-if="role === 'registrator'">
         <li style="padding: 0 80px">
           <h3>Реєстратор</h3>
         </li>
@@ -58,11 +58,14 @@
           </li>
         </div>
       </ul>
-      <router-link to="/administartor">
+      <router-link to="/administartor" v-if="role === 'administrator'">
         <h3>Адміністратор</h3>
       </router-link>
-      <router-link to="/login">
+      <router-link to="/login" v-if="role === 'user'">
         <h3>Увійти в систему</h3>
+      </router-link>
+      <router-link to="/" v-if="role !== 'user'">
+        <h3 v-on:click="handleLogout">Вихід з системи</h3>
       </router-link>
     </header>
     <div class="content">
@@ -75,6 +78,24 @@
 
 export default {
   name: 'App',
+  data() {
+    return {
+      role: localStorage.getItem('token') ? localStorage.getItem('role') : 'user'
+    }
+  },
+  mounted() {
+    console.log('mounted')
+    console.log(localStorage.getItem('token'))
+    console.log(localStorage.getItem('role'))
+    this.role = localStorage.getItem('token') ? localStorage.getItem('role') : 'user'; 
+
+  },
+  updated() {
+    console.log('updated')
+    console.log(localStorage.getItem('token'))
+    console.log(localStorage.getItem('role'))
+    this.role = localStorage.getItem('token') ? localStorage.getItem('role') : 'user'; 
+  },
   methods: {
     handleMouseover() {
       this.$refs.submenu.style.animation = 'appear 0.5s 0s forwards';
@@ -82,6 +103,10 @@ export default {
     },
     handleMouseleave() {
       this.$refs.submenu.style.animation = 'disappear 1s 0s forwards';
+    },
+    handleLogout() {
+      localStorage.clear();
+      this.role = 'user';
     }
   }
 }

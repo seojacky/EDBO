@@ -3,7 +3,7 @@
     <div class="educational-activity-subjects-content">
       <form method="GET">
         <select v-model="region">
-          <option>місто Київ</option>
+          <option value="КИЇВ">місто Київ</option>
           <option>Вінницька область</option>
           <option>Волинська область</option>
           <option>Дніпропетровська область</option>
@@ -30,27 +30,19 @@
           <option>Чернігівська область</option>
         </select>
         <select v-model="subject">
-          <option>Заклади вищої освіти</option>
-          <option>Заклади фахової передвщої освіти</option>
-          <option>Заклади професійної (професійно-технічної) освіти</option>
-          <option>Заклади загальної середньої освіти</option>
+          <option value="Заклад вищої освіти">Заклади вищої освіти</option>
+          <option value="Заклад фахової передвищої освіти">Заклади фахової передвищої освіти</option>
+          <option value="Заклад професійної (професійно-технічної) освіти">Заклади професійної (професійно-технічної) освіти</option>
+          <option value="Заклад загальної середньої освіти">Заклади загальної середньої освіти</option>
         </select>
         <input type="text" v-model="name" placeholder="Пошук за назвою"/>
-        <input type="submit" value="Пошук" />
+        <input type="submit" value="Пошук" v-on:click="handleSearchForm" />
       </form>
       <div class="subjects-container">
-        <h3 v-on:click="handleSubjectClick()">Академія зовнішньої розвідки України</h3>
-        <h3 v-on:click="handleSubjectClick()">Академія праці, соціальних відносин і туризму</h3>
-        <h3 v-on:click="handleSubjectClick()">Вищий навчальний заклад "Київська Академія перукарського мистецтва"</h3>
-        <h3 v-on:click="handleSubjectClick()">Вищий навчальний заклад "Університет економіки та права "КРОК"</h3>
-        <h3 v-on:click="handleSubjectClick()">Військовий інститут телекомунікацій та інформатизації імені Героїв Крут</h3>
-        <h3 v-on:click="handleSubjectClick()">Воєнно-дипломатична академія імені Євгенія Березняка</h3>
-        <h3 v-on:click="handleSubjectClick()">Київська муніципальна академія естрадного та циркового мистецтв</h3>
-        <h3 v-on:click="handleSubjectClick()">Київська муніципальна академія музики ім. Р.М. Глієра</h3>
-        <h3 v-on:click="handleSubjectClick()">Київський національний лінгвістичний університет</h3>
+        <h3 v-on:click="handleSubjectClick(item)" v-for="item in institutions" v-bind:key="item.name">{{item.long_name}}</h3>
       </div>
     </div>
-    <EducationalActivitySubjectsPopup :isPopup="isPopup" @popup="updatePopup" />
+    <EducationalActivitySubjectsPopup :isPopup="isPopup" :result="result" @popup="updatePopup" />
   </div>
 </template>
 
@@ -64,20 +56,54 @@ export default {
   },
   data() {
     return {
-      region: 'місто Київ',
-      subject: 'Заклади вищої освіти',
+      region: 'КИЇВ',
+      subject: 'Заклад вищої освіти',
       name: '',
+      institutions: [],
+      error: '',
+      result: {},
       isPopup: false
     }
   },
+  mounted() {
+    this.loadInstitutions();
+  },
   methods: {
-    handleSubjectClick() {
-      console.log('click')
+    handleSubjectClick(item) {
+      this.$set(this.$data, 'result', item);
+      console.log(item);
       this.isPopup = true;
+    },
+    handleSearchForm(e) {
+      e.preventDefault();
+      this.loadInstitutions();
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
+    },
+    loadInstitutions() {
+      const url = new URL(`${window.location.origin}/api/institutions`);
+      const params = {
+        region: this.region,
+        global_type: this.subject,
+        name: this.name
+      };
+      url.search = new URLSearchParams(params).toString();
+      fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+          this.$set(this.$data, 'institutions', data);
+       })
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
     }
   }
 }

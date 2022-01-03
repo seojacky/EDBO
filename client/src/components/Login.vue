@@ -29,7 +29,29 @@ export default {
     handleSubmitForm(e) {
       e.preventDefault();
       if (!this.error) {
-        this.$router.push({ path: '/administartor' });
+        const url = new URL(`${window.location.origin}/api/auth/login`);
+        const body = {
+          username: this.login,
+          password: this.password
+        };
+        fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)})
+          .then(response => {
+            if (response.status === 200) {
+              return response.json();
+            } else {
+              throw new Error('Введено неправильний логін або пароль.');
+            }
+          })
+          .then(data => {
+            console.log(data);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('role', 'registrator');
+            this.$router.push({ path: '/' });
+          })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+        });
       }
     },
     handleLinkClick() {

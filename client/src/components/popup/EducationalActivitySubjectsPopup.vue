@@ -1,63 +1,63 @@
 <template>
   <div class="popup-background" ref="popup">
     <div class="popup">
-      <h2>Національний технічний університет України "Київський політехнічний інститут імені Ігоря Сікорського"</h2>
+      <h2>{{result.long_name}}</h2>
       <table>
         <tr>
           <td>Код закладу в ЄДЕБО</td>
-          <td>174</td>
+          <td>{{result.code_edbo}}</td>
         </tr>
         <tr>
           <td>Повне найменування</td>
-          <td>Національний технічний університет України "Київський політехнічний інститут імені Ігоря Сікорського"</td>
+          <td>{{result.long_name}}</td>
         </tr>
         <tr>
           <td>Коротка назва</td>
-          <td>НТУУ "КПІ"</td>
+          <td>{{result.short_name}}</td>
         </tr>
         <tr>
           <td>Ідентифікаційний код</td>
-          <td>12345678901234</td>
+          <td>{{result.code_identification}}</td>
         </tr>
         <tr>
           <td>Тип закладу освіти</td>
-          <td>Університет</td>
+          <td>{{result.type}}</td>
         </tr>
         <tr>
           <td>Форма власності</td>
-          <td>Державна</td>
+          <td>{{result.form}}</td>
         </tr>
         <tr>
           <td>Найменування органу, до сфери управління якого належить заклад освіти</td>
-          <td>Міністерство освіти і науки України</td>
+          <td></td>
         </tr>
         <tr>
           <td>Найменування посади, прізвище, ім’я, по батькові керівника закладу освіти</td>
-          <td>Ректор Згуровський Михайло Захарович</td>
+          <td></td>
         </tr>
         <tr>
-          <td>Фактична адреса</td>
-          <td>просп. Перемоги, 37, Київ</td>
+          <td>Адреса</td>
+          <td>{{result.long_adress}}</td>
         </tr>
         <tr>
-          <td>Юридична адреса</td>
-          <td>просп. Перемоги, 37, Київ</td>
+          <td>Поштовий індекс</td>
+          <td>{{result.postal_code}}</td>
         </tr>
         <tr>
           <td>Телефон / факс</td>
-          <td>(063) 743-47-57</td>
+          <td>{{result.phone}}</td>
         </tr>
         <tr>
           <td>Електронна пошта</td>
-          <td>mail@kpi.ua</td>
+          <td>{{result.email}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.site">
           <td>Веб-сайт</td>
-          <td><a href="http://kpi.ua" target="_blank">http://kpi.ua</a></td>
+          <td><a href="http://kpi.ua" target="_blank">{{result.site}}</a></td>
         </tr>
         <tr>
           <td>Рік заснування</td>
-          <td>1898</td>
+          <td>{{result.year_foundation}}</td>
         </tr>
       </table>
       <div class="btn-download">
@@ -72,7 +72,7 @@
 
 <script>
 export default {
-  props: ['isPopup'],
+  props: ['isPopup', 'result'],
   name: 'StudentTicketsPopup',
   watch: { 
     isPopup: function(newVal) { 
