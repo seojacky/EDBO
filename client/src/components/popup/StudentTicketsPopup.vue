@@ -5,27 +5,28 @@
       <table>
         <tr>
           <td>Тип документу</td>
-          <td>Студентський квиток</td>
+          <td>{{result.type}}</td>
         </tr>
         <tr>
           <td>Прізвище, ім'я, по батькові</td>
-          <td>Іванов Іван Іванович</td>
+          <td>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</td>
         </tr>
         <tr>
           <td>Реєстраційний номер</td>
-          <td>КВ 12645679</td>
+          <td>{{result.series}} {{result.number}}</td>
         </tr>
         <tr>
           <td>Статус документу</td>
-          <td class="active">Активний</td>
+          <td class="active" v-if="result.status">{{result.status}}</td>
+          <td class="inactive" v-else>{{result.status}}</td>
         </tr>
         <tr>
           <td>Термін дії</td>
-          <td>01.09.2019 - 30.06.2023</td>
+          <td>{{result.startDate}} - {{result.endDate}}</td>
         </tr>
         <tr>
           <td>Заклад освіти</td>
-          <td>Національний технічний університет України "Київський політехнічний інститут імені Ігоря Сікорського"</td>
+          <td>{{result.institution}}</td>
         </tr>
       </table>
       <div class="btn-download">
@@ -40,11 +41,11 @@
 
 <script>
 export default {
-  props: ['isPopup'],
+  props: ['isPopup', 'result'],
   name: 'StudentTicketsPopup',
   watch: { 
-    isPopup: function(newVal) { 
-      if (newVal === true) {
+    isPopup: function(newValue) { 
+      if (newValue === true) {
         this.$refs.popup.style.display = 'block';
       }
     }

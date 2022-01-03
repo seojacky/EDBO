@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import EducationDocumentsPopup from './EducationDocumentsPopup.vue'
+import Validation from './../../assets/validation.js'
+import EducationDocumentsPopup from './../popup/EducationDocumentsPopup.vue'
 
 export default {
   name: 'EducationDocuments',

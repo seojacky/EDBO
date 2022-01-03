@@ -4,24 +4,23 @@
       <h2>Результати пошуку</h2>
       <table>
         <tr>
-          <td>Рік</td>
-          <td>2019</td>
+          <td>Рік проходження</td>
+          <td>{{result.year}}</td>
         </tr>
         <tr>
           <td>Прізвище, ім'я, по батькові</td>
-          <td>Іванов Іван Іванович</td>
+          <td>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</td>
         </tr>
         <tr>
           <td>Номер сертифікату</td>
-          <td>КВ 12645679</td>
+          <td>{{result.number}}</td>
         </tr>
         <tr>
-          <td>Статус документу</td>
-          <td class="active">Активний</td>
+          <td style="color: black">Результати</td>
         </tr>
-        <tr>
-          <td>Термін дії</td>
-          <td>01.09.2019 - 30.06.2023</td>
+        <tr v-for="item in result.result" v-bind:key="item.subject">
+          <td>{{item.subject}}</td>
+          <td>{{item.result}}</td>
         </tr>
       </table>
       <div class="btn-download">
@@ -36,7 +35,7 @@
 
 <script>
 export default {
-  props: ['isPopup'],
+  props: ['isPopup', 'result'],
   name: 'TeacherCertificatesPopup',
   watch: { 
     isPopup: function(newVal) { 

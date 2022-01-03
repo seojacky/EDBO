@@ -1,6 +1,6 @@
 <template>
   <div class="student-tickets">
-    <h1>Пошук даних для редагування у Реєстрі студентських (учнівських) квитків</h1> 
+    <h1>Реєстр студентських (учнівських) квитків</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані студентського (учнівського) квитка</h3>
       <select v-model="documentType">
@@ -44,11 +44,16 @@
         <input type="submit" value="Пошук" >
       </div>
     </form>
+    <StudentTicketsPopup :isPopup="isPopup" :result="result" @popup="updatePopup" />
+    <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
+import Validation from './../../assets/validation.js'
+import convertDate from './../../assets/convertDate.js'
+import StudentTicketsPopup from './../popup/StudentTicketsPopup.vue'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'StudentTickets',
@@ -70,8 +75,15 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      result: {},
+      error: '',
+      isPopup: false,
+      isErrorPopup: false
     }
+  },
+  components: {
+    StudentTicketsPopup,
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -133,12 +145,52 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isSeriesValid && this.isNumberValid) {
-        this.$router.push({ path: '/update-student-ticket' })
+        const url = new URL(`${window.location.origin}/api/tickets`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          series: this.series,
+          type: this.documentType
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              number: data.number,
+              series: data.series,
+              status: data.status,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              type: data.type,
+              startDate: convertDate(data.start_date),
+              endDate: convertDate(data.end_date),
+              institution: data.institution_name
+            };
+            this.$set(this.$data, 'result', result);
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

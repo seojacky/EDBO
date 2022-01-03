@@ -129,8 +129,8 @@
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import MessagePopup from './MessagePopup.vue'
+import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'AddEducationalActivitySubject',

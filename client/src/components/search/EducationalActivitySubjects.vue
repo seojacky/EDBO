@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import EducationalActivitySubjectsPopup from './EducationalActivitySubjectsPopup.vue';
+import EducationalActivitySubjectsPopup from './../popup/EducationalActivitySubjectsPopup.vue';
 
 export default {
   name: 'EducationalActivitySubjects',

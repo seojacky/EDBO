@@ -1,6 +1,6 @@
 <template>
   <div class="teacher-certificates">
-    <h1>Пошук даних для редагування у Реєстрі сертифікатів педагогічних працівників</h1> 
+    <h1>Реєстр сертифікатів педагогічних працівників</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані сертифіката</h3>
       <select v-model="year">
@@ -33,14 +33,16 @@
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Пошук" />
     </form>
+    <TeacherCertificatesPopup :isPopup="isPopup" @popup="updatePopup" />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
+import Validation from './../../assets/validation.js'
+import TeacherCertificatesPopup from './../popup/TeacherCertificatesPopup.vue'
 
 export default {
-  name: 'UpdateSerarchTeacherCertificates',
+  name: 'TeacherCertificates',
   data() {
     return {
       year: 2021,
@@ -58,6 +60,9 @@ export default {
       isNumberValid: false,
       isPopup: false
     }
+  },
+  components: {
+    TeacherCertificatesPopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -110,7 +115,7 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.$router.push({ path: '/update-teacher-certificate' })
+        this.isPopup = true;
       }
     },
     updatePopup(isPopup) {

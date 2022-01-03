@@ -132,15 +132,15 @@
         </div>
       </div>
       <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Додати до реєстру" />
+      <input type="submit" value="Редагувати" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру сертифікатів Зовнішнього незалежного оцінювання." />
+    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів Зовнішнього незалежного оцінювання." />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import MessagePopup from './MessagePopup.vue'
+import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'TeacherCertificates',
@@ -148,45 +148,45 @@ export default {
     return {
       year: 2021,
       checkLastName: false,
-      lastName: null,
-      isLastNameValid: false,
+      lastName: 'Прізвише',
+      isLastNameValid: true,
       checkFirstName: false,
-      firstName: null,
+      firstName: 'Ім\'я',
       isFirstNameValid: false,
       checkFatherName: false,
-      fatherName: null,
-      isFatherNameValid: false,
+      fatherName: 'По-Батькові',
+      isFatherNameValid: true,
       checkNumber: false,
-      number: null,
-      isNumberValid: false,
-      isPassportNumberValid: null,
-      isPassportOrganizationValid: null,
-      isPassportDateValid: null,
-      isPassportSeriesValid: null,
+      number: '12345678',
+      isNumberValid: true,
+      isPassportNumberValid: true,
+      isPassportOrganizationValid: true,
+      isPassportDateValid: true,
+      isPassportSeriesValid: false,
       checkPassportNumber: false,
       checkPassportOrganization: false,
       checkPassportDate: false,
       checkPassportSeries: false,
-      passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
+      passportNumber: '123456789',
+      passportOrganization: '1234',
+      passportDate: '2021-10-10',
       passportSeries: null,
       checkDateOfBirth: false,
-      isDateOfBirthValid: false,
-      dateOfBirth: null,
+      isDateOfBirthValid: true,
+      dateOfBirth: '2002-05-05',
       isPopup: false,
-      results: 0,
-      subject11: 'Не вибрано',
+      results: 1,
+      subject11: 'Географія',
       subject21: 'Не вибрано',
       subject31: 'Не вибрано',
       subject41: 'Не вибрано',
       subject51: 'Не вибрано',
-      subject1: 'Не вибрано',
+      subject1: 'Географія',
       subject2: 'Не вибрано',
       subject3: 'Не вибрано',
       subject4: 'Не вибрано',
       subject5: 'Не вибрано',
-      grade1: 'Не склав',
+      grade1: '185',
       grade2: 'Не склав',
       grade3: 'Не склав',
       grade4: 'Не склав',
@@ -197,6 +197,7 @@ export default {
         'Математика',
         'Англійська мова',
         'Фізика',
+        'Географія'
       ],
       subjects2: [
         'Не вибрано',
@@ -613,7 +614,6 @@ export default {
   margin-right: 10px;
 }
 .zno-certificates input[type="submit"] {
-  width: 100%;
   color: white;
   background-color: #005F97;
   border: none;

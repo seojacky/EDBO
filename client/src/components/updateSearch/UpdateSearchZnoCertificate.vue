@@ -1,6 +1,6 @@
 <template>
   <div class="zno-certificates">
-    <h1>Реєстр сертифікатів зовнішнього незалежного оцінювання</h1> 
+    <h1>Пошук даних для редагування у Реєстрі сертифікатів зовнішнього незалежного оцінювання</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані сертифіката</h3>
       <select v-model="year">
@@ -44,16 +44,14 @@
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Пошук" />
     </form>
-    <ZnoCertificatesPopup :isPopup="isPopup" @popup="updatePopup" />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import ZnoCertificatesPopup from './ZnoCertificatesPopup.vue'
+import Validation from './../../assets/validation.js'
 
 export default {
-  name: 'ZnorCertificates',
+  name: 'ZnoCertificates',
   data() {
     return {
       year: 2021,
@@ -71,9 +69,6 @@ export default {
       isNumberValid: false,
       isPopup: false
     }
-  },
-  components: {
-    ZnoCertificatesPopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -126,7 +121,7 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.isPopup = true;
+        this.$router.push({path: '/update-zno-certificate'})
       }
     },
     updatePopup(isPopup) {

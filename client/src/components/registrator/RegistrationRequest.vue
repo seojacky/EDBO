@@ -1,6 +1,6 @@
 <template>
   <div class="registration-request">
-  <h1>Редагувати дані реєстратора</h1>
+  <h1>Надсилання запиту на реєстрацію в ЄДЕБО</h1>
     <form method="POST" v-on:submit="handleSubmitForm">
       <div class="left-column">
         <div class="person-info">
@@ -20,7 +20,7 @@
           <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
             {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
           </div>
-          <input type="checkbox" ref="fatherNameCheckbox" v-on:click="handleCheckboxClick" />
+          <input type="checkbox" v-on:click="handleCheckboxClick" />
           <label>Підтверджую, по батькові відсутнє</label>
           <label style="display: inline-block">Дата народження*</label>
           <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
@@ -52,7 +52,7 @@
             <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
               {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
             </div>
-            <input type="checkbox" ref="passportCheckbox" v-on:click="handlePassportCheckboxClick" />
+            <input type="checkbox" v-on:click="handlePassportCheckboxClick" />
             <label>Паспорт старого зразка</label>
             <br/>
             <label>Номер*</label>
@@ -78,29 +78,28 @@
           <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
             {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
           </div> 
-          <input type="checkbox" ref="taxNumberCheckbox" v-on:click="handleTaxCheckboxClick" />
+          <input type="checkbox" v-on:click="handleTaxCheckboxClick" />
           <label>Підтверджую, реєстраційний номер відсутній</label>
           <h5>* обов'язкові поля</h5>
           <h5>** на пошту будуть надіслані логін і пароль після підтвердження<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Вашого запиту, або повідомлення про відхилення Вашого запиту</h5>
         </div>
       </div>
-      <input type="submit" value="Редагувати" />
+      <input type="submit" value="Надіслати запит" />
       <input type="button" value="Скасувати" v-on:click="handleCancelClick" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані реєсратора було оновлено." />
+    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Ваш запит опрацьовується. На вказану Вами пошту буде надіслано логін та пароль після підтвердження Вашого запиту, або повідомлення про відхилення Вашого запиту." />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import MessagePopup from './MessagePopup.vue'
+import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'RegistrationRequest',
   components: {
     MessagePopup
   },
-  props: ['registrator'],
   data() {
     return {
       lastName: null,
@@ -138,33 +137,6 @@ export default {
       isPassportSeriesValid: null,
       isPopup: false,
       organization: 'Місце роботи 1',
-    }
-  },
-  mounted() {
-    console.log(this.registrator)
-    this.lastName = this.registrator.lastName;
-    this.firstName = this.registrator.firstName;
-    this.fatherName = this.registrator.fatherName;
-    this.dateOfBirth = this.registrator.dateOfBirth;
-    this.organization = this.registrator.organization;
-    this.position = this.registrator.position;
-    this.email = this.registrator.email;
-    this.passportNumber = this.registrator.passportNumber;
-    this.passportSeries = this.registrator.passportSeries;
-    this.passportOrganization = this.registrator.passportOrganization;
-    this.passportDate = this.registrator.passportDate;
-    this.taxNumber = this.registrator.taxNumber;
-    if (this.passportSeries) {
-      this.$refs.passportCheckbox.checked = true;
-      this.$refs.passportSeriesInput.disabled = false;
-    }
-    if (this.taxNumber) {
-      this.$refs.taxNumberCheckbox.checked = true;
-      this.$refs.taxNumberInput.disabled = false;
-    }
-    if (this.fatherName) {
-      this.$refs.fatherNameCheckbox.checked = true;
-      this.$refs.fatherNameInput.disabled = false;
     }
   },
   methods: {
@@ -316,11 +288,11 @@ export default {
       }
     },
     handleCancelClick() {
-      this.$router.push('/administartor');
+      this.$router.push('/login');
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.push('/administartor');
+      this.$router.push('/login');
     }
   }
 }

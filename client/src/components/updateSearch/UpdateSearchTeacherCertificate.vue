@@ -1,23 +1,12 @@
 <template>
-  <div class="zno-certificates">
-    <h1>Пошук даних для редагування у Реєстрі сертифікатів зовнішнього незалежного оцінювання</h1> 
+  <div class="teacher-certificates">
+    <h1>Пошук даних для редагування у Реєстрі сертифікатів педагогічних працівників</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані сертифіката</h3>
       <select v-model="year">
         <option>2021</option>
         <option>2020</option>
         <option>2019</option>
-        <option>2018</option>
-        <option>2017</option>
-        <option>2016</option>
-        <option>2015</option>
-        <option>2014</option>
-        <option>2013</option>
-        <option>2012</option>
-        <option>2011</option>
-        <option>2010</option>
-        <option>2009</option>
-        <option>2008</option>
       </select>
       <label>Номер*</label>
       <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
@@ -48,10 +37,10 @@
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
+import Validation from './../../assets/validation.js'
 
 export default {
-  name: 'ZnoCertificates',
+  name: 'UpdateSerarchTeacherCertificates',
   data() {
     return {
       year: 2021,
@@ -121,7 +110,7 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.$router.push({path: '/update-zno-certificate'})
+        this.$router.push({ path: '/update-teacher-certificate' })
       }
     },
     updatePopup(isPopup) {
@@ -133,65 +122,65 @@ export default {
 </script>
   
 <style>
-.zno-certificates h1 {
+.teacher-certificates h1 {
   width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
   padding: 10px;
 }
-.zno-certificates h3 {
+.teacher-certificates h3 {
   margin: 0;
   padding: 10px 0;
 }
-.zno-certificates h5 {
+.teacher-certificates h5 {
   margin: 0;
   font-weight: lighter;
 }
-.zno-certificates select {
+.teacher-certificates select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-.zno-certificates select:focus {
+.teacher-certificates select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;
 }
-.zno-certificates .error {
+.teacher-certificates .error {
   color: red;
   font-size: 12px;
   margin-top: -15px;
 }
-.zno-certificates input:not([type="submit"]) {
+.teacher-certificates input:not([type="submit"]) {
   margin-top: 5px;
   padding: 3px;
 }
-.zno-certificates input {
+.teacher-certificates input {
   margin-bottom: 15px;
 }
-.zno-certificates {
+.teacher-certificates {
   margin-bottom: 15px;
 }
-.zno-certificates input:not([type="submit"]):focus {
+.teacher-certificates input:not([type="submit"]):focus {
   outline: none;
   padding: 2px;
 }
-.zno-certificates .valid {
+.teacher-certificates .valid {
   border: 1px solid grey;
 }
-.zno-certificates .valid:focus {
+.teacher-certificates .valid:focus {
   border: 2px solid #005F97;
 }
-.zno-certificates .invalid {
+.teacher-certificates .invalid {
   border: 1px solid salmon;
 }
-.zno-certificates .invalid:focus {
+.teacher-certificates .invalid:focus {
   border: 2px solid red;
 }
-.zno-certificates form {
+.teacher-certificates form {
   width: 350px;
   background-color: white;
   padding: 30px;
@@ -201,14 +190,14 @@ export default {
   transform: translateX(-50%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.zno-certificates input:not([type="checkbox"]) {
+.teacher-certificates input:not([type="checkbox"]) {
   width: 100%;
   box-sizing: border-box;
 }
-.zno-certificates input[type="checkbox"] {
+.teacher-certificates input[type="checkbox"] {
   margin-right: 10px;
 }
-.zno-certificates input[type="submit"] {
+.teacher-certificates input[type="submit"] {
   color: white;
   background-color: #005F97;
   border: none;
@@ -217,7 +206,7 @@ export default {
   font-size: 20px;
   margin: 10px 0;
 }
-.zno-certificates input[type="submit"]:hover {
+.teacher-certificates input[type="submit"]:hover {
   background-color: #004C79;
   cursor: pointer;
 }

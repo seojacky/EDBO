@@ -1,29 +1,62 @@
 <template>
-  <div class="add-student-ticket">
-    <h1>Редагувати дані у Реєстрі студентських (учнівських) квитків</h1>
-    <form method="POST" v-on:submit="handleSubmitForm">
-      <h3>Дані студентського (учнівського) квитка</h3>
-      <div class="ticket-info-1">
-        <select v-model="documentType">
-          <option>Студентський квиток</option>
-          <option>Учнівський квиток</option>
-        </select>
-        <div style="height: 5px"></div>
-        <label>Повна назва закладу освіти</label>
-        <input type="text" class="valid" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
-        <div class="error" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
+  <div class="education-documents">
+    <h1>Редагувати дані у Реєстрі документів про освіту</h1> 
+    <form method="GET" v-on:submit="handleSubmitForm">
+      <h3>Дані документа про освіту</h3>
+      <select v-model="educationType" v-on:change="handleSelect">
+        <option>Документи про вищу освіту</option>
+        <option>Документи про професійну (професійно-технічну) освіту</option>
+        <option>Документи про загальну середню освіту</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
+        <option>Диплом МАГІСТРА</option>
+        <option>Диплом СПЕЦІАЛІСТА</option>
+        <option>Диплом БАКАЛАВРА</option>
+        <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
+        <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
+        <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
+        <option>Свідоцтво про визнання іноземного документа про освіту</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
+        <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
+        <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
+      </select>
+      <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
+        <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
+        <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
+        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
+        <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
+        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
+        <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
+      </select>
+      <label>Рік закінчення закладу освіти</label>
+      <select v-model="year">
+        <option>2021</option>
+        <option>2020</option>
+        <option>2019</option>
+        <option>2018</option>
+        <option>2017</option>
+        <option>2016</option>
+        <option>2015</option>
+        <option>2014</option>
+        <option>2013</option>
+        <option>2012</option>
+        <option>2011</option>
+        <option>2010</option>
+        <option>2009</option>
+      </select>
+      <div class="document-info">
+        <label>Дата видачі документу</label>
+        <input type="date" class="valid name" ref="dateInput" v-model="date" v-on:focusout="handleFocusoutDate" />
+        <div class="error" v-if="checkDate && validateInputDate('Дата народження', date, 'dateInput')">
+          {{validateInputDate('Дата видачі документу', date, 'dateInput').message}}
+        </div>
+        <label>Повна назва закладу освіти*</label>
+        <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
+        <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
           {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
         </div>
-        <label>Термін дії</label>
-        <div class="student-ticket-date">
-          <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
-          <label> - </label>
-          <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
         </div>
-        <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
-          {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
-        </div>
-      </div>
       <div class="ticket-info">
         <label>Серія*</label>
         <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
@@ -37,7 +70,7 @@
         <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
           {{validateInputNumber('Номер', number, 'numberInput').message}}
         </div>  
-      </div>       
+      </div>  
       <h3>Дані особи</h3>
       <div class="person-info">
         <label>Прізвище*</label>
@@ -57,10 +90,10 @@
         </div>
         <input type="checkbox" v-on:click="handleCheckboxClick" />
         <label>Підтверджую, по батькові відсутнє</label>
-        <label style="display: inline-block">Дата народження*</label>
+        <label>Дата народження*</label>
         <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-        <div class="error" v-if="checkDateOfBirth && validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-          {{validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
+        <div class="error" v-if="checkDateOfBirth && validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput')">
+          {{validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
         </div>
       </div>
       <div class="passport-info">
@@ -92,22 +125,21 @@
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Редагувати" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі студентських (учнівських) квитків." />
+    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі документів про освіту." />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import MessagePopup from './MessagePopup.vue'
+import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'AddStudentTicket',
-  components: {
-    MessagePopup
-  },
+  name: 'EducationDocuments',
   data() {
     return {
-      documentType: 'Студентський квиток',
+      educationType: 'Документи про вищу освіту',
+      documentType: 'Диплом МАГІСТРА',
+      year: 2021,
       checkLastName: false,
       lastName: 'Прізвище',
       isLastNameValid: true,
@@ -126,12 +158,12 @@ export default {
       checkEducationSubject: false,
       educationSubject: 'НТУУ КПІ',
       isEducationSubjectValid: true,
-      checkStartDate: false,
-      startDate: '2018-12-12',
-      isStartDateValid: true,
-      checkEndDate: false,
-      endDate: '2022-12-12',
-      isEndDateValid: true,
+      checkDate: null,
+      date: '2019-06-06',
+      isDateValid: true,
+      checkDateOfBirth: null,
+      dateOfBirth: '2002-12-10',
+      isDateOfBirthValid: true,
       isPassportNumberValid: true,
       isPassportOrganizationValid: true,
       isPassportDateValid: true,
@@ -142,14 +174,13 @@ export default {
       checkPassportSeries: false,
       passportNumber: '123456789',
       passportOrganization: '1234',
-      passportDate: '2020-10-10',
+      passportDate: '2020-04-03',
       passportSeries: null,
-      checkDateOfBirth: false,
-      isDateOfBirthValid: true,
-      dateOfBirth: '2001-04-06',
-      isActive: true,
       isPopup: false
     }
+  },
+  components: {
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -170,11 +201,8 @@ export default {
     handleFocusoutEducationSubject() {
       this.checkEducationSubject = true;
     },
-    handleFocusoutStartDate() {
-      this.checkStartDate = true;
-    },
-    handleFocusoutEndDate() {
-      this.checkEndDate = true;
+    handleFocusoutDate() {
+      this.checkDate = true;
     },
     handleFocusoutPassportSeries() {
       this.checkPassportSeries = true;
@@ -211,6 +239,27 @@ export default {
         this.$refs.fatherNameInput.disabled = false;
       }
     },
+    validateInputPassportSeries(field, series, elementName) {
+      const message = Validation.validateSeries(field, series, this.$refs[elementName]);
+      this.isPassportSeriesValid = message ? false : true;
+      return message;
+    },
+    validateInputPassportNumber(field, number, elementName) {
+      const amount = this.$refs.passportSeriesInput.disabled ? 9 : 6;
+      const message = Validation.validatePassportNumber(field, number, this.$refs[elementName], amount);
+      this.isPassportNumberValid = message ? false : true;
+      return message;
+    },
+    validateInputPassportOrganization(field, number, elementName) {
+      const message = Validation.validatePassportOrganization(field, number, this.$refs[elementName]);
+      this.isPassportOrganizationValid = message ? false : true;
+      return message;
+    },
+    validateInputPassportDate(field, number, elementName) {
+      const message = Validation.validateDate(field, number, this.$refs[elementName]);
+      this.isPassportDateValid = message ? false : true;
+      return message;
+    },
     validateInputName(field, name, elementName) {
       const message = Validation.validateName(field, name, this.$refs[elementName]);
       if (field === 'Прізвище') {
@@ -237,47 +286,24 @@ export default {
       this.isEducationSubjectValid = message ? false : true;
       return message;
     },
-    validateDateRange(startDate, elementName1, endDate, elementName2) {
-      const result = Validation.validateDateRange(startDate, this.$refs[elementName1], endDate, this.$refs[elementName2]);
-      this.isStartDateValid = result.field1;
-      this.isEndDateValid = result.field2;
-      return result.message;
-    },
-    validateInputPassportSeries(field, series, elementName) {
-      const message = Validation.validateSeries(field, series, this.$refs[elementName]);
-      this.isPassportSeriesValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportNumber(field, number, elementName) {
-      const amount = this.$refs.passportSeriesInput.disabled ? 9 : 6;
-      const message = Validation.validatePassportNumber(field, number, this.$refs[elementName], amount);
-      this.isPassportNumberValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportOrganization(field, number, elementName) {
-      const message = Validation.validatePassportOrganization(field, number, this.$refs[elementName]);
-      this.isPassportOrganizationValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportDate(field, number, elementName) {
-      const message = Validation.validateDate(field, number, this.$refs[elementName]);
-      this.isPassportDateValid = message ? false : true;
-      return message;
-    },
     validateInputDate(field, date, elementName) {
+      const message = Validation.validateDate(field, date, this.$refs[elementName]);
+      this.isDateValid = message ? false : true;
+      return message;
+    },
+    validateInputDateOfBirth(field, date, elementName) {
       const message = Validation.validateDate(field, date, this.$refs[elementName]);
       this.isDateOfBirthValid = message ? false : true;
       return message;
     },
     handleSubmitForm(e) {
       e.preventDefault();
-      this.checkEducationSubject = true;
-      this.checkStartDate = true;
-      this.checkEndDate = true;
       this.checkSeries = true;
       this.checkNumber = true;
       this.checkLastName = true;
       this.checkFirstName = true;
+      this.checkEducationSubject = true;
+      this.checkDate = true;
       this.checkDateOfBirth = true;
       this.checkPassportNumber = true;
       this.checkPassportOrganization = true;
@@ -291,13 +317,22 @@ export default {
         this.checkFatherName = true;
       } else {
         this.isFatherNameValid = true;
-      } 
+      }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
-        && this.isSeriesValid && this.isNumberValid && this.isEducationSubjectValid
-        && this.isStartDateValid && this.isEndDateValid
+        && this.isSeriesValid && this.isNumberValid && this.isDateValid
+        && this.isDateOfBirthValid && this.isEducationSubjectValid
         && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
-        && this.isPassportSeriesValid && this.isDateOfBirthValid ) {
+        && this.isPassportSeriesValid) {
         this.isPopup = true;
+      }
+    },
+    handleSelect() {
+      if (this.educationType === 'Документи про вищу освіту') {
+        this.documentType = 'Диплом МАГІСТРА';
+      } else if (this.educationType === 'Документи про професійну (професійно-технічну) освіту') {
+        this.documentType = 'Диплом КВАЛІФІКОВАНОГО РОБІТНИКА';
+      } else if (this.educationType === 'Документи про загальну середню освіту') {
+        this.documentType = 'СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)';
       }
     },
     updatePopup(isPopup) {
@@ -309,87 +344,77 @@ export default {
 </script>
   
 <style>
-.add-student-ticket h1 {
+.education-documents h1 {
   width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
   padding: 10px;
 }
-.add-student-ticket h3 {
+.education-documents h3 {
   margin: 0;
   padding: 10px 0;
 }
-.add-student-ticket h5 {
+.education-documents h5 {
   margin: 0;
   font-weight: lighter;
 }
-.add-student-ticket select {
+.education-documents select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-.add-student-ticket select:focus {
+.education-documents select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;
 }
-.add-student-ticket .error {
+.education-documents .error {
   color: red;
   font-size: 12px;
   margin-top: -15px;
 }
-.add-student-ticket .error-container {
+.education-documents .error-container {
   height: 30px;
 }
-.add-student-ticket .error-container .error {
+.education-documents .error-container .error {
   margin-top: 0px;
 }
-.add-student-ticket input:not([type="submit"]) {
+.education-documents input:not([type="submit"]) {
   margin-top: 5px;
   padding: 3px;
 }
-.add-student-ticket .person-info input,
-.add-student-ticket .passport-info input,
-.add-student-ticket .ticket-info-1 input[type="text"] {
+.education-documents .person-info input, 
+.education-documents .passport-info input, 
+.education-documents .document-info input {
   margin-bottom: 15px;
 }
-.add-student-ticket .person-info, 
-.add-student-ticket .passport-info, 
-.add-student-ticket .student-ticket-date {
+.education-documents .person-info,
+.education-documents .passport-info {
   margin-bottom: 15px;
 }
-.add-student-ticket input:not([type="submit"]):focus {
+.education-documents .person-info label:last-of-type {
+  display: block;
+}
+.education-documents input:not([type="submit"]):focus {
   outline: none;
   padding: 2px;
 }
-.add-student-ticket .student-ticket-date {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-.add-student-ticket .student-ticket-date label {
-  font-size: 30px;
-}
-.add-student-ticket .student-ticket-date input {
- width: 155px;
-}
-.add-student-ticket .valid {
+.education-documents .valid {
   border: 1px solid grey;
 }
-.add-student-ticket .valid:focus {
+.education-documents .valid:focus {
   border: 2px solid #005F97;
 }
-.add-student-ticket .invalid {
+.education-documents .invalid {
   border: 1px solid salmon;
 }
-.add-student-ticket .invalid:focus {
+.education-documents .invalid:focus {
   border: 2px solid red;
 }
-.add-student-ticket form {
+.education-documents form {
   width: 350px;
   background-color: white;
   padding: 30px;
@@ -399,29 +424,29 @@ export default {
   transform: translateX(-50%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.add-student-ticket .ticket-info {
+.education-documents .ticket-info {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
-.add-student-ticket .ticket-info input:first-of-type {
+.education-documents .ticket-info input:first-of-type {
   width: 50px;
 }
-.add-student-ticket .ticket-info input:last-of-type {
+.education-documents .ticket-info input:last-of-type {
   width: 170px;
 }
-.add-student-ticket .person-info input:not([type="checkbox"]),
-.add-student-ticket .passport-info input:not([type="checkbox"]),
-.add-student-ticket .ticket-info-1 input[type="text"] {
+.education-documents .person-info input:not([type="checkbox"]), 
+.education-documents .passport-info input:not([type="checkbox"]), 
+.education-documents .document-info input {
   width: 100%;
   box-sizing: border-box;
 }
-.add-student-ticket .person-info input[type="checkbox"], 
-.add-student-ticket .passport-info input[type="checkbox"] {
+.education-documents .person-info input[type="checkbox"],
+.education-documents .passport-info input[type="checkbox"] {
   margin-right: 10px;
 }
-.add-student-ticket input[type="submit"] {
+.education-documents input[type="submit"] {
   width: 100%;
   color: white;
   background-color: #005F97;
@@ -431,7 +456,7 @@ export default {
   font-size: 20px;
   margin: 10px 0;
 }
-.add-student-ticket input[type="submit"]:hover {
+.education-documents input[type="submit"]:hover {
   background-color: #004C79;
   cursor: pointer;
 }

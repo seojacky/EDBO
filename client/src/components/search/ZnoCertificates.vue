@@ -1,12 +1,23 @@
 <template>
-  <div class="teacher-certificates">
-    <h1>Реєстр сертифікатів педагогічних працівників</h1> 
+  <div class="zno-certificates">
+    <h1>Реєстр сертифікатів зовнішнього незалежного оцінювання</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані сертифіката</h3>
       <select v-model="year">
         <option>2021</option>
         <option>2020</option>
         <option>2019</option>
+        <option>2018</option>
+        <option>2017</option>
+        <option>2016</option>
+        <option>2015</option>
+        <option>2014</option>
+        <option>2013</option>
+        <option>2012</option>
+        <option>2011</option>
+        <option>2010</option>
+        <option>2009</option>
+        <option>2008</option>
       </select>
       <label>Номер*</label>
       <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
@@ -33,16 +44,18 @@
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Пошук" />
     </form>
-    <TeacherCertificatesPopup :isPopup="isPopup" @popup="updatePopup" />
+    <ZnoCertificatesPopup :isPopup="isPopup" :result="result" @popup="updatePopup" />
+    <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
   </div>
 </template>
 
 <script>
-import Validation from './../assets/validation.js'
-import TeacherCertificatesPopup from './TeacherCertificatesPopup.vue'
+import Validation from './../../assets/validation.js'
+import ZnoCertificatesPopup from './../popup/ZnoCertificatesPopup.vue'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'TeacherCertificates',
+  name: 'ZnorCertificates',
   data() {
     return {
       year: 2021,
@@ -58,11 +71,15 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      result: {},
+      error: '',
+      isPopup: false,
+      isErrorPopup: false
     }
   },
   components: {
-    TeacherCertificatesPopup
+    ZnoCertificatesPopup,
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -115,77 +132,112 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/zno`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          year: this.year
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              number: data.number,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              year: data.year,
+              result: data.result
+            };
+            this.$set(this.$data, 'result', result);
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }
 </script>
   
 <style>
-.teacher-certificates h1 {
+.zno-certificates h1 {
   width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
   padding: 10px;
 }
-.teacher-certificates h3 {
+.zno-certificates h3 {
   margin: 0;
   padding: 10px 0;
 }
-.teacher-certificates h5 {
+.zno-certificates h5 {
   margin: 0;
   font-weight: lighter;
 }
-.teacher-certificates select {
+.zno-certificates select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-.teacher-certificates select:focus {
+.zno-certificates select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;
 }
-.teacher-certificates .error {
+.zno-certificates .error {
   color: red;
   font-size: 12px;
   margin-top: -15px;
 }
-.teacher-certificates input:not([type="submit"]) {
+.zno-certificates input:not([type="submit"]) {
   margin-top: 5px;
   padding: 3px;
 }
-.teacher-certificates input {
+.zno-certificates input {
   margin-bottom: 15px;
 }
-.teacher-certificates {
+.zno-certificates {
   margin-bottom: 15px;
 }
-.teacher-certificates input:not([type="submit"]):focus {
+.zno-certificates input:not([type="submit"]):focus {
   outline: none;
   padding: 2px;
 }
-.teacher-certificates .valid {
+.zno-certificates .valid {
   border: 1px solid grey;
 }
-.teacher-certificates .valid:focus {
+.zno-certificates .valid:focus {
   border: 2px solid #005F97;
 }
-.teacher-certificates .invalid {
+.zno-certificates .invalid {
   border: 1px solid salmon;
 }
-.teacher-certificates .invalid:focus {
+.zno-certificates .invalid:focus {
   border: 2px solid red;
 }
-.teacher-certificates form {
+.zno-certificates form {
   width: 350px;
   background-color: white;
   padding: 30px;
@@ -195,14 +247,14 @@ export default {
   transform: translateX(-50%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.teacher-certificates input:not([type="checkbox"]) {
+.zno-certificates input:not([type="checkbox"]) {
   width: 100%;
   box-sizing: border-box;
 }
-.teacher-certificates input[type="checkbox"] {
+.zno-certificates input[type="checkbox"] {
   margin-right: 10px;
 }
-.teacher-certificates input[type="submit"] {
+.zno-certificates input[type="submit"] {
   color: white;
   background-color: #005F97;
   border: none;
@@ -211,7 +263,7 @@ export default {
   font-size: 20px;
   margin: 10px 0;
 }
-.teacher-certificates input[type="submit"]:hover {
+.zno-certificates input[type="submit"]:hover {
   background-color: #004C79;
   cursor: pointer;
 }

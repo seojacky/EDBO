@@ -1,7 +1,7 @@
 <template>
   <div class="administartor-page">
     <h1>Сторінка адміністратора</h1>
-    <h3>Запити на набуття ролі адміністратора</h3>
+    <h3>Запити на набуття ролі реєстратора</h3>
     <div class="request-list" v-if="requests.length > 0">
       <table>
         <tr>
