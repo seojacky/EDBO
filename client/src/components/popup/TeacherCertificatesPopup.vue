@@ -5,23 +5,32 @@
       <table>
         <tr>
           <td>Рік</td>
-          <td>2019</td>
+          <td>{{result.year}}</td>
         </tr>
         <tr>
           <td>Прізвище, ім'я, по батькові</td>
-          <td>Іванов Іван Іванович</td>
+          <td>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</td>
         </tr>
         <tr>
           <td>Номер сертифікату</td>
-          <td>12645679</td>
+          <td>{{result.number}}</td>
         </tr>
         <tr>
           <td>Статус документу</td>
-          <td class="active">Активний</td>
+          <td class="active" v-if="result.status === 'Активний'">{{result.status}}</td>
+          <td class="inactive" v-else>{{result.status}}</td>
         </tr>
         <tr>
           <td>Термін дії</td>
-          <td>01.09.2019 - 30.06.2023</td>
+          <td>{{result.startDate}} - {{result.endDate}}</td>
+        </tr>
+        <tr>
+          <td>Посада</td>
+          <td>{{result.position}}</td>
+        </tr>
+        <tr>
+          <td>Номер комісії</td>
+          <td>{{result.comissionNumber}}</td>
         </tr>
       </table>
       <div class="btn-download">
@@ -36,7 +45,7 @@
 
 <script>
 export default {
-  props: ['isPopup'],
+  props: ['isPopup', 'result'],
   name: 'TeacherCertificatesPopup',
   watch: { 
     isPopup: function(newVal) { 

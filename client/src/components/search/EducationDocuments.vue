@@ -69,13 +69,16 @@
         <input type="submit" value="Пошук" />
       </div>
     </form>
-    <EducationDocumentsPopup :isPopup="isPopup" @popup="updatePopup" />
+    <EducationDocumentsPopup :isPopup="isPopup" :result="result" @popup="updatePopup" />
+    <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
   </div>
 </template>
 
 <script>
 import Validation from './../../assets/validation.js'
+import convertDate from './../../assets/convertDate.js'
 import EducationDocumentsPopup from './../popup/EducationDocumentsPopup.vue'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'EducationDocuments',
@@ -99,11 +102,14 @@ export default {
       number: null,
       isNumberValid: false,
       date: null,
-      isPopup: false
+      result: {},
+      isPopup: false,
+      isErrorPopup: false
     }
   },
   components: {
-    EducationDocumentsPopup
+    EducationDocumentsPopup,
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -165,7 +171,44 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isSeriesValid && this.isNumberValid) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/diplomas`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          series: this.series,
+          type: this.documentType
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              number: data.number,
+              series: data.series,
+              status: data.status,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              institution: data.institution_name,
+              year: data.year_graduation,
+              documentDate: convertDate(data.date_issue),
+              dateOfBirth: this.date ? convertDate(this.date) : null
+            };
+            this.$set(this.$data, 'result', result);
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
     handleSelect() {
@@ -180,6 +223,9 @@ export default {
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

@@ -9,27 +9,27 @@
         </tr>
         <tr>
           <td>Реєстраційний номер документа в Єдиній державній електронній базі з питань освіти</td>
-          <td>КВ 12645679</td>
+          <td>{{result.series}} {{result.number}}</td>
         </tr>
         <tr>
           <td>Дата видачі документа</td>
-          <td>25.06.2019</td>
+          <td>{{result.documentDate}}</td>
         </tr>
         <tr>
           <td>Рік закінчення закладу освіти (відокремленого структурного підрозділу) (здобуття освіти)</td>
-          <td>2019</td>
+          <td>{{result.year}}</td>
         </tr>
         <tr>
           <td>Прізвище, ім'я, по батькові</td>
-          <td>Іванов Іван Іванович</td>
+          <td>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.dateOfBirth">
           <td>Дата народження</td>
-          <td>20.10.2001</td>
+          <td>{{result.dateOfBirth}}</td>
         </tr>
         <tr>
           <td>Найменування закладу освіти</td>
-          <td>Середня загальноосвітня школа №1 м. Києва</td>
+          <td>{{result.institution}}</td>
         </tr>
       </table>
       <div class="btn-download">
@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  props: ['isPopup'],
+  props: ['isPopup', 'result'],
   name: 'StudentTicketsPopup',
   watch: { 
     isPopup: function(newVal) { 

@@ -33,13 +33,16 @@
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Пошук" />
     </form>
-    <TeacherCertificatesPopup :isPopup="isPopup" @popup="updatePopup" />
+    <TeacherCertificatesPopup :isPopup="isPopup" :result="result" @popup="updatePopup" />
+    <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
   </div>
 </template>
 
 <script>
 import Validation from './../../assets/validation.js'
+import convertDate from './../../assets/convertDate.js'
 import TeacherCertificatesPopup from './../popup/TeacherCertificatesPopup.vue'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'TeacherCertificates',
@@ -58,11 +61,14 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      result: {},
+      isPopup: false,
+      isErrorPopup: false
     }
   },
   components: {
-    TeacherCertificatesPopup
+    TeacherCertificatesPopup,
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -99,7 +105,7 @@ export default {
       return message;
     },
     validateInputNumber(field, number, elementName) {
-      const message = Validation.validateNumber(field, number, this.$refs[elementName]);
+      const message = Validation.validateNotEmpty(field, number, this.$refs[elementName]);
       this.isNumberValid = message ? false : true;
       return message;
     },
@@ -115,12 +121,51 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/certificates`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          year: this.year
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              number: data.number,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              startDate: convertDate(data.start_date),
+              endDate: convertDate(data.end_date),
+              position: data.position,
+              status: data.status,
+              year: data.year_graduation,
+              comissionNumber: data.comission_number
+            };
+            this.$set(this.$data, 'result', result);
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

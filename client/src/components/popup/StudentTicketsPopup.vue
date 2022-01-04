@@ -17,7 +17,7 @@
         </tr>
         <tr>
           <td>Статус документу</td>
-          <td class="active" v-if="result.status">{{result.status}}</td>
+          <td class="active" v-if="result.status === 'Активний'">{{result.status}}</td>
           <td class="inactive" v-else>{{result.status}}</td>
         </tr>
         <tr>

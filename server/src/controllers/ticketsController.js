@@ -12,7 +12,7 @@ const getTicket = async(req, res) => {
     if (!ticket) {
         throw new InvalidRequestError('Немає записів з такими даними!')
     }
-    if (ticket.end_date > new Date().getHours()) {
+    if (ticket.end_date > Date.now()) {
         ticket.status = "Активний"
     } else {
         ticket.status = "Неактивний"

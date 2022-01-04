@@ -6,10 +6,10 @@ const getCertificate = async(req, res) => {
     if (!certificate) {
         throw new InvalidRequestError('Немає записів з такими даними!')
     }
-    if (ticket.end_date > new Date().getHours()) {
-        ticket.status = "Активний"
+    if (certificate.end_date > Date.now()) {
+        certificate.status = "Активний"
     } else {
-        ticket.status = "Неактивний"
+        certificate.status = "Неактивний"
     }
     certificate.surname = surname;
     certificate.name = name;
