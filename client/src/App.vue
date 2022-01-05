@@ -56,6 +56,16 @@
               <h4>Додати дані до Реєстру<br/>суб'єктів освітньої діяльності</h4>
             </router-link>
           </li>
+           <li>
+            <router-link to="/update-search-zno-certificate">
+              <h4>Додати дані осіб</h4>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/update-search-person-info">
+              <h4>Редагувати дані осіб</h4>
+            </router-link>
+          </li>
         </div>
       </ul>
       <router-link to="/administartor" v-if="role === 'administrator'">

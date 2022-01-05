@@ -17,14 +17,19 @@ import AddTeacherCertificate from './components/add/AddTeacherCertificate.vue'
 import AddEducationDocument from './components/add/AddEducationDocument.vue'
 import AddZnoCertificate from './components/add/AddZnoCertificate.vue'
 import AddEducationalActivitySubject from './components/add/AddEducationalActivitySubject'
+import AddPersonInfo from './components/add/AddPersonInfo.vue'
 import UpdateStudentTicket from './components/update/UpdateStudentTicket.vue'
 import UpdateTeacherCertificate from './components/update/UpdateTeacherCertificate.vue'
 import UpdateEducationDocument from './components/update/UpdateEducationDocument.vue'
 import UpdateZnoCertificate from './components/update/UpdateZnoCertificate.vue'
+import UpdateEducationalActivitySubject from './components/update/UpdateEducationalActivitySubject.vue'
+import UpdatePersonInfo from './components/update/UpdatePersonInfo.vue'
 import UpdateSearchStudentTicket from './components/updateSearch/UpdateSearchStudentTicket.vue'
 import UpdateSearchTeacherCertificate from './components/updateSearch/UpdateSearchTeacherCertificate.vue'
 import UpdateSearchEducationDocument from './components/updateSearch/UpdateSearchEducationDocument.vue'
 import UpdateSearchZnoCertificate from './components/updateSearch/UpdateSearchZnoCertificate.vue'
+import UpdateSearchEducationalActivitySubject from './components/updateSearch/UpdateSearchEducationalActivitySubject.vue'
+import UpdateSearchPersonInfo from './components/updateSearch/UpdateSearchPersonInfo.vue'
 
 Vue.config.productionTip = false;
 Vue.use(VueRouter);
@@ -112,6 +117,11 @@ const routes = [
     component: AddEducationalActivitySubject
   },
   {
+    path: '/add-person-info',
+    name: 'AddPersonInfo',
+    component: AddPersonInfo
+  },
+  {
     path: '/update-student-ticket',
     name: 'UpdateStudentTicket',
     component: UpdateStudentTicket
@@ -132,6 +142,16 @@ const routes = [
     component: UpdateZnoCertificate
   },
   {
+    path: '/update-educational-activity-subject',
+    name: 'UpdateEducationalActivitySubject',
+    component: UpdateEducationalActivitySubject
+  },
+  {
+    path: '/update-person-info',
+    name: 'UpdatePersonInfo',
+    component: UpdatePersonInfo
+  },
+  {
     path: '/update-search-student-ticket',
     name: 'UpdateSearchStudentTicket',
     component: UpdateSearchStudentTicket
@@ -150,6 +170,16 @@ const routes = [
     path: '/update-search-zno-certificate',
     name: 'UpdateSearchZnoCertificate',
     component: UpdateSearchZnoCertificate
+  },
+  {
+    path: '/update-search-educational-activity-subject',
+    name: 'UpdateSearchEducationalActivitySubject',
+    component: UpdateSearchEducationalActivitySubject
+  },
+  {
+    path: '/update-search-person-info',
+    name: 'UpdateSearchPersonInfo',
+    component: UpdateSearchPersonInfo
   },
 ]
 

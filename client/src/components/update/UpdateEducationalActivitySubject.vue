@@ -1,6 +1,6 @@
 <template>
   <div class="add-educational-activity-subject">
-    <h1>Додати дані до Реєстру суб'єктів освітньої діяльності</h1> 
+    <h1>Редагувати дані у Реєстрі суб'єктів освітньої діяльності</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
       <h3>Дані закладу освіти</h3>
       <div class="educational-info">
@@ -84,18 +84,18 @@
         <label style="display: inline-block">Підтверджую, по батькові відсутнє</label>
       </div>
       <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Додати до реєстру" />
+      <input type="submit" value="Редагувати" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру cуб'єктів освітньої діяльності." />
+    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі cуб'єктів освітньої діяльності." />
   </div>
 </template>
 
 <script>
-import Validation from './../../assets/validation.js'
-import MessagePopup from './../popup/MessagePopup.vue'
+import Validation from '../../assets/validation.js'
+import MessagePopup from '../popup/MessagePopup.vue'
 
 export default {
-  name: 'AddEducationalActivitySubject',
+  name: 'UpdateEducationalActivitySubject',
   components: {
     MessagePopup
   },

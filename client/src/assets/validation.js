@@ -104,6 +104,28 @@ const Validation = {
       return null;
     }
   },
+  validatePostcode: function (field, number, element) {
+    const numbers = /^[0-9]+$/;
+    if (!number) {
+      element.className = 'invalid';
+      return {
+        message: `Поле "${field}" не може бути пустим`
+      }
+    } else if (!numbers.test(number)) {
+      element.className = 'invalid';
+      return {
+        message: `"${field}" може містити лише цифри`
+      }
+    } else if (number.length !== 5) {
+      element.className = 'invalid';
+      return {
+        message: `Поле "${field}" має містити 5 цифр`
+      }
+    } else {
+      element.className = 'valid';
+      return null;
+    }
+  },
   validatePassportNumber: function (field, number, element, amount) {
     const numbers = /^[0-9]+$/;
     if (!number) {

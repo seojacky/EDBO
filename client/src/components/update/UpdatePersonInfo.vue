@@ -1,39 +1,7 @@
 <template>
-  <div class="add-teacher-certificate">
-    <h1>Додати дані до Реєстру сертифікатів педагогічних працівників</h1>
-    <form method="POST" v-on:submit="handleSubmitForm">
-      <h3>Дані сертифікату</h3>
-      <div class="teacher-certificate">
-        <select v-model="year">
-          <option>2021</option>
-          <option>2020</option>
-          <option>2019</option>
-        </select>
-        <label>Термін дії</label>
-        <div class="teacher-certificate-date">
-          <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
-          <label> - </label>
-          <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
-        </div>
-        <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
-          {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
-        </div>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
-        </div>  
-        <label>Посада*</label>
-        <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />   
-        <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
-          {{validateInputPosition('Посада', position, 'positionInput').message}}
-        </div> 
-        <label>Номер комісії*</label>
-        <input type="text" class="valid" ref="comissionNumberInput" v-model="comissionNumber" v-on:focusout="handleFocusoutComissionNumber" />   
-        <div class="error" v-if="checkComissionNumber && validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput')">
-          {{validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput').message}}
-        </div>  
-      </div>       
+  <div class="education-documents">
+    <h1>Редагувати дані особи</h1> 
+    <form method="GET" v-on:submit="handleSubmitForm">  
       <h3>Дані особи</h3>
       <div class="person-info">
         <label>Прізвище*</label>
@@ -53,10 +21,10 @@
         </div>
         <input type="checkbox" v-on:click="handleCheckboxClick" />
         <label>Підтверджую, по батькові відсутнє</label>
-        <label style="display: inline-block">Дата народження*</label>
+        <label>Дата народження*</label>
         <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-        <div class="error" v-if="checkDateOfBirth && validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-          {{validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
+        <div class="error" v-if="checkDateOfBirth && validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput')">
+          {{validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
         </div>
       </div>
       <div class="passport-info">
@@ -86,9 +54,9 @@
         </div>  
       </div>
       <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Додати до реєстру" />
+      <input type="submit" value="Редагувати" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру сертифікатів педагогічних працівників." />
+    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі документів про освіту." />
   </div>
 </template>
 
@@ -97,55 +65,38 @@ import Validation from './../../assets/validation.js'
 import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'AddTeacherCertificate',
-  components: {
-    MessagePopup
-  },
+  name: 'UpdatePersonInfo',
   data() {
     return {
-      year: 2021,
       checkLastName: false,
-      lastName: null,
-      isLastNameValid: false,
+      lastName: 'Прізвище',
+      isLastNameValid: true,
       checkFirstName: false,
-      firstName: null,
-      isFirstNameValid: false,
+      firstName: 'Ім\'я',
+      isFirstNameValid: true,
       checkFatherName: false,
-      fatherName: null,
-      isFatherNameValid: false,
-      checkNumber: false,
-      number: null,
-      isNumberValid: false,
-      checkStartDate: false,
-      startDate: null,
-      isStartDateValid: false,
-      checkEndDate: false,
-      endDate: null,
-      isEndDateValid: false,
-      isPassportNumberValid: null,
-      isPassportOrganizationValid: null,
-      isPassportDateValid: null,
-      isPassportSeriesValid: null,
+      fatherName: 'По-Батькові',
+      isFatherNameValid: true,
+      checkDateOfBirth: null,
+      dateOfBirth: '2002-12-10',
+      isDateOfBirthValid: true,
+      isPassportNumberValid: true,
+      isPassportOrganizationValid: true,
+      isPassportDateValid: true,
+      isPassportSeriesValid: false,
       checkPassportNumber: false,
       checkPassportOrganization: false,
       checkPassportDate: false,
       checkPassportSeries: false,
-      passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
+      passportNumber: '123456789',
+      passportOrganization: '1234',
+      passportDate: '2020-04-03',
       passportSeries: null,
-      checkDateOfBirth: false,
-      isDateOfBirthValid: false,
-      dateOfBirth: null,
-      checkPosition: false,
-      position: null,
-      isPositionValid: false,
-      checkComissionNumber: false,
-      comissionNumber: null,
-      isComissionNumberValid: false,
-      isActive: true,
       isPopup: false
     }
+  },
+  components: {
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -156,15 +107,6 @@ export default {
     },
     handleFocusoutFatherName() {
       this.checkFatherName = true;
-    },
-    handleFocusoutNumber() {
-      this.checkNumber = true;
-    },
-    handleFocusoutStartDate() {
-      this.checkStartDate = true;
-    },
-    handleFocusoutEndDate() {
-      this.checkEndDate = true;
     },
     handleFocusoutPassportSeries() {
       this.checkPassportSeries = true;
@@ -180,12 +122,6 @@ export default {
     },
     handleFocusoutDateOfBirth() {
       this.checkDateOfBirth = true;
-    },
-    handleFocusoutPosition() {
-      this.checkPosition = true;
-    },
-    handleFocusoutComissionNumber() {
-      this.checkComissionNumber = true;
     },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
@@ -228,11 +164,6 @@ export default {
       this.isPassportDateValid = message ? false : true;
       return message;
     },
-    validateInputDate(field, date, elementName) {
-      const message = Validation.validateDate(field, date, this.$refs[elementName]);
-      this.isDateOfBirthValid = message ? false : true;
-      return message;
-    },
     validateInputName(field, name, elementName) {
       const message = Validation.validateName(field, name, this.$refs[elementName]);
       if (field === 'Прізвище') {
@@ -244,40 +175,19 @@ export default {
       }
       return message;
     },
-    validateInputNumber(field, number, elementName) {
-      const message = Validation.validateNotEmpty(field, number, this.$refs[elementName]);
-      this.isNumberValid = message ? false : true;
+    validateInputDateOfBirth(field, date, elementName) {
+      const message = Validation.validateDate(field, date, this.$refs[elementName]);
+      this.isDateOfBirthValid = message ? false : true;
       return message;
-    },
-    validateInputPosition(field, position, elementName) {
-      const message = Validation.validateNotEmpty(field, position, this.$refs[elementName]);
-      this.isPositionValid = message ? false : true;
-      return message;
-    },
-    validateInputComissionNumber(field, number, elementName) {
-      const message = Validation.validateNotEmpty(field, number, this.$refs[elementName]);
-      this.isComissionNumberValid = message ? false : true;
-      return message;
-    },
-    validateDateRange(startDate, elementName1, endDate, elementName2) {
-      const result = Validation.validateDateRange(startDate, this.$refs[elementName1], endDate, this.$refs[elementName2]);
-      this.isStartDateValid = result.field1;
-      this.isEndDateValid = result.field2;
-      return result.message;
     },
     handleSubmitForm(e) {
       e.preventDefault();
-      this.checkStartDate = true;
-      this.checkEndDate = true;
-      this.checkNumber = true;
       this.checkLastName = true;
       this.checkFirstName = true;
       this.checkDateOfBirth = true;
       this.checkPassportNumber = true;
       this.checkPassportOrganization = true;
       this.checkPassportDate = true;
-      this.checkPosition = true;
-      this.checkComissionNumber = true;
       if (!this.$refs.passportSeriesInput.disabled) {
         this.checkPassportSeries = true;
       } else {
@@ -287,12 +197,11 @@ export default {
         this.checkFatherName = true;
       } else {
         this.isFatherNameValid = true;
-      } 
+      }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
-        && this.isNumberValid && this.isStartDateValid && this.isEndDateValid
-        && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
-        && this.isPassportSeriesValid && this.isDateOfBirthValid
-        && this.isPositionValid && this.isComissionNumberValid) {
+        && this.isDateOfBirthValid && this.isPassportNumberValid 
+        && this.isPassportOrganizationValid && this.isPassportDateValid
+        && this.isPassportSeriesValid) {
         this.isPopup = true;
       }
     },
@@ -305,81 +214,77 @@ export default {
 </script>
   
 <style>
-.add-teacher-certificate h1 {
+.education-documents h1 {
   width: 100%;
   text-align: center;
   color: #004C79;
   margin: 0;
   padding: 10px;
 }
-.add-teacher-certificate h3 {
+.education-documents h3 {
   margin: 0;
   padding: 10px 0;
 }
-.add-teacher-certificate h5 {
+.education-documents h5 {
   margin: 0;
   font-weight: lighter;
 }
-.add-teacher-certificate select {
+.education-documents select {
   width: 100%;
   margin: 5px 0;
   font-family: serif;
   padding: 3px;
   border: 1px solid grey;
 }
-.add-teacher-certificate select:focus {
+.education-documents select:focus {
   padding: 2px;
   border: 2px solid #005F97;
   outline: none;
 }
-.add-teacher-certificate .error {
+.education-documents .error {
   color: red;
   font-size: 12px;
   margin-top: -15px;
 }
-.add-teacher-certificate input:not([type="submit"]) {
+.education-documents .error-container {
+  height: 30px;
+}
+.education-documents .error-container .error {
+  margin-top: 0px;
+}
+.education-documents input:not([type="submit"]) {
   margin-top: 5px;
   padding: 3px;
 }
-.add-teacher-certificate .person-info input,
-.add-teacher-certificate .passport-info input,
-.add-teacher-certificate .teacher-certificate input[type="text"] {
+.education-documents .person-info input, 
+.education-documents .passport-info input, 
+.education-documents .document-info input {
   margin-bottom: 15px;
 }
-.add-teacher-certificate .person-info, 
-.add-teacher-certificate .passport-info, 
-.add-teacher-certificate .teacher-certificate-date {
+.education-documents .person-info,
+.education-documents .passport-info {
   margin-bottom: 15px;
 }
-.add-teacher-certificate input:not([type="submit"]):focus {
+.education-documents .person-info label:last-of-type {
+  display: block;
+}
+.education-documents input:not([type="submit"]):focus {
   outline: none;
   padding: 2px;
 }
-.add-teacher-certificate .teacher-certificate-date {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-.add-teacher-certificate .teacher-certificate-date label {
-  font-size: 30px;
-}
-.add-teacher-certificate .teacher-certificate-date input {
- width: 155px;
-}
-.add-teacher-certificate .valid {
+.education-documents .valid {
   border: 1px solid grey;
 }
-.add-teacher-certificate .valid:focus {
+.education-documents .valid:focus {
   border: 2px solid #005F97;
 }
-.add-teacher-certificate .invalid {
+.education-documents .invalid {
   border: 1px solid salmon;
 }
-.add-teacher-certificate .invalid:focus {
+.education-documents .invalid:focus {
   border: 2px solid red;
 }
-.add-teacher-certificate form {
+.education-documents form {
   width: 350px;
   background-color: white;
   padding: 30px;
@@ -389,17 +294,29 @@ export default {
   transform: translateX(-50%);
   box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
 }
-.add-teacher-certificate .person-info input:not([type="checkbox"]),
-.add-teacher-certificate .passport-info input:not([type="checkbox"]),
-.add-teacher-certificate .teacher-certificate input[type="text"] {
+.education-documents .ticket-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.education-documents .ticket-info input:first-of-type {
+  width: 50px;
+}
+.education-documents .ticket-info input:last-of-type {
+  width: 170px;
+}
+.education-documents .person-info input:not([type="checkbox"]), 
+.education-documents .passport-info input:not([type="checkbox"]), 
+.education-documents .document-info input {
   width: 100%;
   box-sizing: border-box;
 }
-.add-teacher-certificate .person-info input[type="checkbox"],
-.add-teacher-certificate .passport-info input[type="checkbox"] {
+.education-documents .person-info input[type="checkbox"],
+.education-documents .passport-info input[type="checkbox"] {
   margin-right: 10px;
 }
-.add-teacher-certificate input[type="submit"] {
+.education-documents input[type="submit"] {
   width: 100%;
   color: white;
   background-color: #005F97;
@@ -409,7 +326,7 @@ export default {
   font-size: 20px;
   margin: 10px 0;
 }
-.add-teacher-certificate input[type="submit"]:hover {
+.education-documents input[type="submit"]:hover {
   background-color: #004C79;
   cursor: pointer;
 }
