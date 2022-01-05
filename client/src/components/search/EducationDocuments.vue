@@ -178,7 +178,9 @@ export default {
           patronymic: this.fatherName,
           number: this.number,
           series: this.series,
-          type: this.documentType
+          type: this.documentType,
+          global_type: this.educationType,
+          birthday_date: this.date,
         };
         url.search = new URLSearchParams(params).toString();
         fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
@@ -199,8 +201,10 @@ export default {
               fatherName: data.patronymic,
               institution: data.institution_name,
               year: data.year_graduation,
+              type: data.type,
+              globalType: data.global_type,
               documentDate: convertDate(data.date_issue),
-              dateOfBirth: this.date ? convertDate(this.date) : null
+              dateOfBirth: data.birthday_date !== 'null' ? convertDate(data.birthday_date) : null
             };
             this.$set(this.$data, 'result', result);
          })

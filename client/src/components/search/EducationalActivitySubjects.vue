@@ -34,6 +34,7 @@
           <option value="Заклад фахової передвищої освіти">Заклади фахової передвищої освіти</option>
           <option value="Заклад професійної (професійно-технічної) освіти">Заклади професійної (професійно-технічної) освіти</option>
           <option value="Заклад загальної середньої освіти">Заклади загальної середньої освіти</option>
+          <option>Наукові інститути (установи)</option>
         </select>
         <input type="text" v-model="name" placeholder="Пошук за назвою"/>
         <input type="submit" value="Пошук" v-on:click="handleSearchForm" />

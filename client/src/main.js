@@ -2,16 +2,17 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
 import MainPage from './components/MainPage.vue'
+
 import Login from './components/Login.vue'
 import RegistrationRequest from './components/registrator/RegistrationRequest.vue'
 import RegistratorUpdate from './components/registrator/RegistratorUpdate.vue'
 import AdministratorPage from './components/administrator/AdministratorPage.vue'
 import Journal from './components/administrator/Journal.vue'
-import EducationDocuments from './components/search/EducationDocuments.vue'
-import StudentTickets from './components/search/StudentTickets.vue'
-import ZnoCertificates from './components/search/ZnoCertificates.vue'
+import EducationDocuments from './components/search/EducationDocuments.vue' //+
+import StudentTickets from './components/search/StudentTickets.vue' //+
+import ZnoCertificates from './components/search/ZnoCertificates.vue' //+
 import EducationalActivitySubjects from './components/search/EducationalActivitySubjects.vue'
-import TeacherCertificates from './components/search/TeacherCertificates.vue'
+import TeacherCertificates from './components/search/TeacherCertificates.vue' //+
 import AddStudentTicket from './components/add/AddStudentTicket.vue'
 import AddTeacherCertificate from './components/add/AddTeacherCertificate.vue'
 import AddEducationDocument from './components/add/AddEducationDocument.vue'

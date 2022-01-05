@@ -5,7 +5,7 @@
       <table>
         <tr>
           <td>Найменування документу</td>
-          <td>Свідоцтво про здобуття загальної середньої освіти</td>
+          <td>{{result.type}}</td>
         </tr>
         <tr>
           <td>Реєстраційний номер документа в Єдиній державній електронній базі з питань освіти</td>
@@ -23,7 +23,7 @@
           <td>Прізвище, ім'я, по батькові</td>
           <td>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</td>
         </tr>
-        <tr v-if="result.dateOfBirth">
+        <tr v-if="result.dateOfBirth !== null">
           <td>Дата народження</td>
           <td>{{result.dateOfBirth}}</td>
         </tr>

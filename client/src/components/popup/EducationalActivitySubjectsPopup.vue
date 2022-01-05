@@ -11,7 +11,7 @@
           <td>Повне найменування</td>
           <td>{{result.long_name}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.short_name">
           <td>Коротка назва</td>
           <td>{{result.short_name}}</td>
         </tr>
@@ -27,13 +27,13 @@
           <td>Форма власності</td>
           <td>{{result.form}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.unit_institution">
           <td>Найменування органу, до сфери управління якого належить заклад освіти</td>
-          <td></td>
+          <td>{{result.unit_institution}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.position">
           <td>Найменування посади, прізвище, ім’я, по батькові керівника закладу освіти</td>
-          <td></td>
+          <td>{{result.position}} {{result.surname}} {{result.name}} {{result.patronymic}}</td>
         </tr>
         <tr>
           <td>Адреса</td>
@@ -47,7 +47,7 @@
           <td>Телефон / факс</td>
           <td>{{result.phone}}</td>
         </tr>
-        <tr>
+        <tr v-if="result.email">
           <td>Електронна пошта</td>
           <td>{{result.email}}</td>
         </tr>
@@ -55,7 +55,7 @@
           <td>Веб-сайт</td>
           <td><a href="http://kpi.ua" target="_blank">{{result.site}}</a></td>
         </tr>
-        <tr>
+        <tr v-if="result.year_foundation">
           <td>Рік заснування</td>
           <td>{{result.year_foundation}}</td>
         </tr>
