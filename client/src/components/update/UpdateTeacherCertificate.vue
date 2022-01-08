@@ -1,44 +1,50 @@
 <template>
   <div class="add-teacher-certificate">
-    <h1>Редагувати дані у Реєстрі сертифікатів педагогічних працівників</h1>
-    <form method="POST" v-on:submit="handleSubmitForm">
-      <h2>ПІБ</h2>
-      <h3>Дані сертифікату</h3>
-      <div class="teacher-certificate">
-        <select v-model="year">
-          <option>2021</option>
-          <option>2020</option>
-          <option>2019</option>
-        </select>
-        <label>Термін дії</label>
-        <div class="teacher-certificate-date">
-          <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
-          <label> - </label>
-          <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
-        </div>
-        <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
-          {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
-        </div>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
-        </div> 
-        <label>Посада*</label>
-        <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />   
-        <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
-          {{validateInputPosition('Посада', position, 'positionInput').message}}
-        </div> 
-        <label>Номер комісії*</label>
-        <input type="text" class="valid" ref="comissionNumberInput" v-model="comissionNumber" v-on:focusout="handleFocusoutComissionNumber" />   
-        <div class="error" v-if="checkComissionNumber && validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput')">
-          {{validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput').message}}
-        </div>  
-      </div>       
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Редагувати" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів педагогічних працівників." />
+    <div v-if="role === 'registrator'">
+      <h1>Редагувати дані у Реєстрі сертифікатів педагогічних працівників</h1>
+      <form method="POST" v-on:submit="handleSubmitForm">
+        <h2>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</h2>
+        <h3>Дані сертифікату</h3>
+        <div class="teacher-certificate">
+          <select v-model="year">
+            <option>2021</option>
+            <option>2020</option>
+            <option>2019</option>
+          </select>
+          <label>Термін дії</label>
+          <div class="teacher-certificate-date">
+            <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
+            <label> - </label>
+            <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
+          </div>
+          <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
+            {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
+          </div>
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div> 
+          <label>Посада*</label>
+          <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />   
+          <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
+            {{validateInputPosition('Посада', position, 'positionInput').message}}
+          </div> 
+          <label>Номер комісії*</label>
+          <input type="text" class="valid" ref="comissionNumberInput" v-model="comissionNumber" v-on:focusout="handleFocusoutComissionNumber" />   
+          <div class="error" v-if="checkComissionNumber && validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput')">
+            {{validateInputComissionNumber('Номер комісії', comissionNumber, 'comissionNumberInput').message}}
+          </div>  
+        </div>       
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Редагувати" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів педагогічних працівників." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -48,29 +54,36 @@ import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'UpdateTeacherCertificate',
+  props: ['result'],
   components: {
     MessagePopup
   },
   data() {
     return {
-      year: 2021,
+      year: this.result.year,
       checkNumber: false,
-      number: '12348765',
+      number: this.result.number,
       isNumberValid: true,
       checkStartDate: false,
-      startDate: '2018-12-12',
+      startDate: this.result.startDate.split('T')[0],
       isStartDateValid: true,
       checkEndDate: false,
-      endDate: '2022-12-12',
+      endDate: this.result.endDate.split('T')[0],
       isEndDateValid: true,
       checkPosition: false,
-      position: 'Директор',
+      position: this.result.position,
       isPositionValid: true,
       checkComissionNumber: false,
-      comissionNumber: '12345',
+      comissionNumber: this.result.comissionNumber,
       isComissionNumberValid: true,
-      isPopup: false
+      error: '',
+      isPopup: false,
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutNumber() {
@@ -118,12 +131,45 @@ export default {
       this.checkComissionNumber = true;
       if (this.isNumberValid && this.isStartDateValid && this.isEndDateValid
         && this.isPositionValid && this.isComissionNumberValid) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/certificates/update`);
+        const body = {
+          certificate_id: this.result.certificateId,
+          number: this.number,
+          start_date: this.startDate, 
+          end_date: this.endDate,
+          position: this.position,
+          comission_number: this.comissionNumber,
+          year_graduation: this.year
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
+      this.$router.push({path: '/update-search-teacher-certificate'});
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

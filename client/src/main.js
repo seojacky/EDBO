@@ -125,32 +125,38 @@ const routes = [
   {
     path: '/update-student-ticket',
     name: 'UpdateStudentTicket',
-    component: UpdateStudentTicket
+    component: UpdateStudentTicket,
+    props: true
   },
   {
     path: '/update-teacher-certificate',
     name: 'UpdateTeacherCertificate',
-    component: UpdateTeacherCertificate
+    component: UpdateTeacherCertificate,
+    props: true
   },
   {
     path: '/update-education-document',
     name: 'UpdateEducationDocument',
-    component: UpdateEducationDocument
+    component: UpdateEducationDocument,
+    props: true
   },
   {
     path: '/update-zno-certificate',
     name: 'UpdateZnoCertificate',
-    component: UpdateZnoCertificate
+    component: UpdateZnoCertificate,
+    props: true
   },
   {
     path: '/update-educational-activity-subject',
     name: 'UpdateEducationalActivitySubject',
-    component: UpdateEducationalActivitySubject
+    component: UpdateEducationalActivitySubject,
+    props: true
   },
   {
     path: '/update-person-info',
     name: 'UpdatePersonInfo',
-    component: UpdatePersonInfo
+    component: UpdatePersonInfo,
+    props: true
   },
   {
     path: '/update-search-student-ticket',

@@ -7,5 +7,4 @@ router.get('/', asyncWrapper(getCertificate));
 router.post('/create', authMiddleware, asyncWrapper(createCertificate));
 router.put('/update', authMiddleware, asyncWrapper(updateCertificate));
 
-
 module.exports = router;

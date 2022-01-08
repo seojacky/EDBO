@@ -44,8 +44,8 @@ export default {
           })
           .then(data => {
             console.log(data);
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('role', 'registrator');
+            localStorage.setItem('token', data.result.token);
+            localStorage.setItem('role', data.result.role);
             this.$router.push({ path: '/' });
           })
         .then(() => {this.isPopup = true;})

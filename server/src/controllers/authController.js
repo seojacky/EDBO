@@ -6,10 +6,10 @@ const loginUser = async(req, res) => {
         password
     } = req.body;
 
-    const token = await getToken(username, password);
+    const result = await getToken(username, password);
 
     res.status(200).json({
-        token: token
+        result: result
     })
 }
 

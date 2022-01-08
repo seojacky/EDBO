@@ -57,7 +57,7 @@
             </router-link>
           </li>
            <li>
-            <router-link to="/update-search-zno-certificate">
+            <router-link to="/add-person-info">
               <h4>Додати дані осіб</h4>
             </router-link>
           </li>
@@ -98,7 +98,6 @@ export default {
     console.log(localStorage.getItem('token'))
     console.log(localStorage.getItem('role'))
     this.role = localStorage.getItem('token') ? localStorage.getItem('role') : 'user'; 
-
   },
   updated() {
     console.log('updated')

@@ -1,57 +1,67 @@
 <template>
   <div class="student-tickets">
-    <h1>Пошук даних для редагування у Реєстрі студентських (учнівських) квитків</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані студентського (учнівського) квитка</h3>
-      <select v-model="documentType">
-        <option>Студентський квиток</option>
-        <option>Учнівський квиток</option>
-      </select>
-      <div class="ticket-info">
-        <label>Серія*</label>
-        <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" >
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" >   
-      </div>
-      <div class="error-container">
-        <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
-          {{validateInputSeries('Серія', series, 'seriesInput').message}}
+    <div v-if="role === 'registrator'">
+      <h1>Пошук даних для редагування у Реєстрі студентських (учнівських) квитків</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані студентського (учнівського) квитка</h3>
+        <select v-model="documentType">
+          <option>Студентський квиток</option>
+          <option>Учнівський квиток</option>
+        </select>
+        <div class="ticket-info">
+          <label>Серія*</label>
+          <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" >
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" >   
         </div>
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
+        <div class="error-container">
+          <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
+            {{validateInputSeries('Серія', series, 'seriesInput').message}}
+          </div>
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div>  
         </div>  
-      </div>  
-      <h3>Дані особи</h3>
-      <div class="person-info">
-        <label>Прізвище*</label>
-        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+        <h3>Дані особи</h3>
+        <div class="person-info">
+          <label>Прізвище*</label>
+          <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+          <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+            {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+          </div>
+          <label>Ім'я*</label>
+          <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" >
+          <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+            {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+          </div>
+          <label>По батькові</label>
+          <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" >
+          <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+            {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+          </div>
+          <input type="checkbox" v-on:click="handleCheckboxClick" >
+          <label>Підтверджую, по батькові відсутнє</label>
+          <h5>* обов'язкові поля</h5>
+          <input type="submit" value="Пошук" >
         </div>
-        <label>Ім'я*</label>
-        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" >
-        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-        </div>
-        <label>По батькові</label>
-        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" >
-        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handleCheckboxClick" >
-        <label>Підтверджую, по батькові відсутнє</label>
-        <h5>* обов'язкові поля</h5>
-        <input type="submit" value="Пошук" >
-      </div>
-    </form>
+      </form>
+      <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
 <script>
 import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'StudentTickets',
+  components: {
+    MessagePopup
+  },
   data() {
     return {
       documentType: 'Студентський квиток',
@@ -70,8 +80,13 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      error: '',
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutLastName() {
@@ -133,12 +148,49 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isSeriesValid && this.isNumberValid) {
-        this.$router.push({ path: '/update-student-ticket' })
+        const url = new URL(`${window.location.origin}/api/tickets`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          series: this.series,
+          type: this.documentType
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              student_ticket_id: data.student_ticket_id,
+              number: data.number,
+              series: data.series,
+              status: data.status,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              type: data.type,
+              startDate: data.start_date,
+              endDate: data.end_date,
+              institution: data.institution_name
+            };
+            this.$router.push({ name: 'UpdateStudentTicket', params: { result: result }});
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
-    updatePopup(isPopup) {
+    updateErrorPopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
     }
   }
 }

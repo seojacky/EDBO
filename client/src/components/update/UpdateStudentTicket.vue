@@ -1,48 +1,54 @@
 <template>
   <div class="add-student-ticket">
-    <h1>Редагувати дані у Реєстрі студентських (учнівських) квитків</h1>
-    <form method="POST" v-on:submit="handleSubmitForm">
-      <h2>Прізвище Ім'я По батькові</h2>
-      <h3>Дані студентського (учнівського) квитка</h3>
-      <div class="ticket-info-1">
-        <select v-model="documentType">
-          <option>Студентський квиток</option>
-          <option>Учнівський квиток</option>
-        </select>
-        <div style="height: 5px"></div>
-        <label>Повна назва закладу освіти</label>
-        <input type="text" class="valid" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
-        <div class="error" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
-          {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+    <div v-if="role === 'registrator' && result">
+      <h1>Редагувати дані у Реєстрі студентських (учнівських) квитків</h1>
+      <form method="POST" v-on:submit="handleSubmitForm">
+        <h2>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</h2>
+        <h3>Дані студентського (учнівського) квитка</h3>
+        <div class="ticket-info-1">
+          <select v-model="documentType">
+            <option>Студентський квиток</option>
+            <option>Учнівський квиток</option>
+          </select>
+          <div style="height: 5px"></div>
+          <label>Повна назва закладу освіти</label>
+          <input type="text" class="valid" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
+          <div class="error" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
+            {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+          </div>
+          <label>Термін дії</label>
+          <div class="student-ticket-date">
+            <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
+            <label> - </label>
+            <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
+          </div>
+          <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
+            {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
+          </div>
         </div>
-        <label>Термін дії</label>
-        <div class="student-ticket-date">
-          <input type="date" class="valid" ref="startDateInput" v-model="startDate" v-on:focusout="handleFocusoutStartDate" />
-          <label> - </label>
-          <input type="date" class="valid" ref="endDateInput" v-model="endDate" v-on:focusout="handleFocusoutEndDate" />
+        <div class="ticket-info">
+          <label>Серія*</label>
+          <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
         </div>
-        <div class="error" v-if="(checkStartDate && checkEndDate) && validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')">
-          {{validateDateRange(startDate, 'startDateInput', endDate, 'endDateInput')}}
-        </div>
-      </div>
-      <div class="ticket-info">
-        <label>Серія*</label>
-        <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-      </div>
-      <div class="error-container">
-        <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
-          {{validateInputSeries('Серія', series, 'seriesInput').message}}
-        </div>
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
-        </div>  
-      </div>       
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Редагувати" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі студентських (учнівських) квитків." />
+        <div class="error-container">
+          <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
+            {{validateInputSeries('Серія', series, 'seriesInput').message}}
+          </div>
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div>  
+        </div>       
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Редагувати" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі студентських (учнівських) квитків." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -55,26 +61,33 @@ export default {
   components: {
     MessagePopup
   },
+  props: ['result'],
   data() {
     return {
-      documentType: 'Студентський квиток',
+      documentType: this.result.type,
       checkSeries: false,
-      series: 'АА',
+      series: this.result.series,
       isSeriesValid: true,
       checkNumber: false,
-      number: '12345678',
+      number: this.result.number,
       isNumberValid: true,
       checkEducationSubject: false,
-      educationSubject: 'НТУУ КПІ',
+      educationSubject: this.result.institution,
       isEducationSubjectValid: true,
       checkStartDate: false,
-      startDate: '2018-12-12',
+      startDate: this.result.startDate.split('T')[0],
       isStartDateValid: true,
       checkEndDate: false,
-      endDate: '2022-12-12',
+      endDate: this.result.endDate.split('T')[0],
       isEndDateValid: true,
-      isPopup: false
+      error: '',
+      isPopup: false,
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutSeries() {
@@ -122,12 +135,45 @@ export default {
       this.checkNumber = true;
       if (this.isSeriesValid && this.isNumberValid && this.isEducationSubjectValid
         && this.isStartDateValid && this.isEndDateValid ) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/tickets/update`);
+        const body = {
+          student_ticket_id: this.result.student_ticket_id,
+          number: this.number,
+          series: this.series,
+          type: this.documentType,
+          institution_name: this.educationSubject, 
+          start_date: this.startDate, 
+          end_date: this.endDate
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
+      this.$router.push({path: '/update-search-student-ticket'});
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

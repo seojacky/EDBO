@@ -1,38 +1,44 @@
 <template>
   <div class="teacher-certificates">
-    <h1>Пошук даних для редагування у Реєстрі сертифікатів педагогічних працівників</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані сертифіката</h3>
-      <select v-model="year">
-        <option>2021</option>
-        <option>2020</option>
-        <option>2019</option>
-      </select>
-      <label>Номер*</label>
-      <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-      <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-        {{validateInputNumber('Номер', number, 'numberInput').message}}
-      </div> 
-      <label>Прізвище*</label>
-      <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-      <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-        {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
-      </div>
-      <label>Ім'я*</label>
-      <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-      <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-        {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-      </div>
-      <label>По батькові</label>
-      <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-      <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-        {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-      </div>
-      <input type="checkbox" v-on:click="handleCheckboxClick" />
-      <label>Підтверджую, по батькові відсутнє</label>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Пошук" />
-    </form>
+    <div v-if="role === 'registrator'">
+      <h1>Пошук даних для редагування у Реєстрі сертифікатів педагогічних працівників</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані сертифіката</h3>
+        <select v-model="year">
+          <option>2021</option>
+          <option>2020</option>
+          <option>2019</option>
+        </select>
+        <label>Номер*</label>
+        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
+        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+          {{validateInputNumber('Номер', number, 'numberInput').message}}
+        </div> 
+        <label>Прізвище*</label>
+        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+        </div>
+        <label>Ім'я*</label>
+        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+        </div>
+        <label>По батькові</label>
+        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+        </div>
+        <input type="checkbox" v-on:click="handleCheckboxClick" />
+        <label>Підтверджую, по батькові відсутнє</label>
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Пошук" />
+      </form>
+      <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -56,8 +62,13 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      error: '',
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutLastName() {
@@ -94,7 +105,7 @@ export default {
       return message;
     },
     validateInputNumber(field, number, elementName) {
-      const message = Validation.validateNumber(field, number, this.$refs[elementName]);
+      const message = Validation.validateNotEmpty(field, number, this.$refs[elementName]);
       this.isNumberValid = message ? false : true;
       return message;
     },
@@ -110,12 +121,48 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.$router.push({ path: '/update-teacher-certificate' })
+        const url = new URL(`${window.location.origin}/api/certificates`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          number: this.number,
+          year: this.year
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+            const result = {
+              certificateId: data.certificate_id,
+              year: data.year_graduation,
+              position: data.position,
+              comissionNumber: data.comission_number,
+              number: data.number,
+              status: data.status,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              startDate: data.start_date,
+              endDate: data.end_date
+            };
+            this.$router.push({ name: 'UpdateTeacherCertificate', params: { result: result }});
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
-    updatePopup(isPopup) {
+    updateErrorPopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
     }
   }
 }
