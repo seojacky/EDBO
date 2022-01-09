@@ -1,56 +1,66 @@
 <template>
   <div class="zno-certificates">
-    <h1>Пошук даних для редагування у Реєстрі суб'єктів освітньої діяльності</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <select v-model="region">
-        <option value="КИЇВ">місто Київ</option>
-        <option>Вінницька область</option>
-        <option>Волинська область</option>
-        <option>Дніпропетровська область</option>
-        <option>Донецька область</option>
-        <option>Житомирська область</option>
-        <option>Закарпатська область</option>
-        <option>Запорізька область</option>
-        <option>Івано-Франківська область</option>
-        <option>Київська область</option>
-        <option>Кіровоградська область</option>
-        <option>Луганська область</option>
-        <option>Львівська область</option>
-        <option>Миколаївська область</option>
-        <option>Одеська область</option>
-        <option>Полтавська область</option>
-        <option>Рівненська область</option>
-        <option>Сумська область</option>
-        <option>Тернопільска область</option>
-        <option>Харківська область</option>
-        <option>Херсонська область</option>
-        <option>Хмельницька область</option>
-        <option>Черкаська область</option>
-        <option>Чернівецька область</option>
-        <option>Чернігівська область</option>
-      </select>
-      <select v-model="subject">
-        <option value="Заклад вищої освіти">Заклади вищої освіти</option>
-        <option value="Заклад фахової передвищої освіти">Заклади фахової передвищої освіти</option>
-        <option value="Заклад професійної (професійно-технічної) освіти">Заклади професійної (професійно-технічної) освіти</option>
-        <option value="Заклад загальної середньої освіти">Заклади загальної середньої освіти</option>
-      </select>
-      <label>Повна назва закладу освіти*</label>
-      <input type="text" class="valid" ref="nameInput" v-model="name" v-on:focusout="handleFocusoutName" />
-      <div class="error" v-if="checkName && validateInputName('Назва', name, 'nameInput')">
-        {{validateInputName('Назва', name, 'nameInput').message}}
-      </div>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Пошук" />
-    </form>
+    <div v-if="role === 'registrator'">
+      <h1>Пошук даних для редагування у Реєстрі суб'єктів освітньої діяльності</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <select v-model="region">
+          <option value="КИЇВ">місто Київ</option>
+          <option>Вінницька область</option>
+          <option>Волинська область</option>
+          <option>Дніпропетровська область</option>
+          <option>Донецька область</option>
+          <option>Житомирська область</option>
+          <option>Закарпатська область</option>
+          <option>Запорізька область</option>
+          <option>Івано-Франківська область</option>
+          <option>Київська область</option>
+          <option>Кіровоградська область</option>
+          <option>Луганська область</option>
+          <option>Львівська область</option>
+          <option>Миколаївська область</option>
+          <option>Одеська область</option>
+          <option>Полтавська область</option>
+          <option>Рівненська область</option>
+          <option>Сумська область</option>
+          <option>Тернопільска область</option>
+          <option>Харківська область</option>
+          <option>Херсонська область</option>
+          <option>Хмельницька область</option>
+          <option>Черкаська область</option>
+          <option>Чернівецька область</option>
+          <option>Чернігівська область</option>
+        </select>
+        <select v-model="subject">
+          <option value="Заклад вищої освіти">Заклади вищої освіти</option>
+          <option value="Заклад фахової передвищої освіти">Заклади фахової передвищої освіти</option>
+          <option value="Заклад професійної (професійно-технічної) освіти">Заклади професійної (професійно-технічної) освіти</option>
+          <option value="Заклад загальної середньої освіти">Заклади загальної середньої освіти</option>
+        </select>
+        <label>Повна назва закладу освіти*</label>
+        <input type="text" class="valid" ref="nameInput" v-model="name" v-on:focusout="handleFocusoutName" />
+        <div class="error" v-if="checkName && validateInputName('Назва', name, 'nameInput')">
+          {{validateInputName('Назва', name, 'nameInput').message}}
+        </div>
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Пошук" />
+      </form>
+      <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
 <script>
 import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'UpdateSearchEducationalActivitySubjects',
+  components: {
+    MessagePopup
+  },
   data() {
     return {
       region: 'КИЇВ',
@@ -58,7 +68,13 @@ export default {
       checkName: false,
       name: null,
       isNameValid: false,
+      error: '',
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutName() {
@@ -72,13 +88,34 @@ export default {
     handleSubmitForm(e) {
       e.preventDefault();
       if (this.isNameValid) {
-        this.$router.push({path: '/update-educational-activity-subject'})
+        const url = new URL(`${window.location.origin}/api/institutions/one`);
+        const params = {
+          region: this.region,
+          global_type: this.subject,
+          name: this.name
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+           console.log(data)
+           this.$router.push({name: 'UpdateEducationalActivitySubject', params: {result: data}}) 
+         })
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
-    updatePopup(isPopup) {
+    updateErrorPopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
-    }
+    },
   }
 }
 </script>

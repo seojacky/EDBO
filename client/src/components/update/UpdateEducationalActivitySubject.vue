@@ -1,92 +1,146 @@
 <template>
   <div class="add-educational-activity-subject">
-    <h1>Редагувати дані у Реєстрі суб'єктів освітньої діяльності</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані закладу освіти</h3>
-      <div class="educational-info">
-        <label>Код закладу в ЄДЕБО*</label>
-        <input type="number" min="1" max="50000" class="valid name" ref="educationSubjectNumberInput" v-model="educationSubjectNumber" v-on:focusout="handleFocusoutEducationSubjectNumber" />
-        <div class="error error-name" v-if="checkEducationSubjectNumber && validateInputEducationSybjectNumber('Код закладу', educationSubjectNumber, 'educationSubjectNumberInput')">
-          {{validateInputEducationSybjectNumber('Код закладу', educationSubjectNumber, 'educationSubjectNumberInput').message}}
+    <div v-if="role === 'registrator' && result">
+      <h1>Редагувати дані у Реєстрі суб'єктів освітньої діяльності</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані закладу освіти</h3>
+        <div class="educational-info">
+          <select v-model="region">
+            <option value="КИЇВ">місто Київ</option>
+            <option>Вінницька область</option>
+            <option>Волинська область</option>
+            <option>Дніпропетровська область</option>
+            <option>Донецька область</option>
+            <option>Житомирська область</option>
+            <option>Закарпатська область</option>
+            <option>Запорізька область</option>
+            <option>Івано-Франківська область</option>
+            <option>Київська область</option>
+            <option>Кіровоградська область</option>
+            <option>Луганська область</option>
+            <option>Львівська область</option>
+            <option>Миколаївська область</option>
+            <option>Одеська область</option>
+            <option>Полтавська область</option>
+            <option>Рівненська область</option>
+            <option>Сумська область</option>
+            <option>Тернопільска область</option>
+            <option>Харківська область</option>
+            <option>Херсонська область</option>
+            <option>Хмельницька область</option>
+            <option>Черкаська область</option>
+            <option>Чернівецька область</option>
+            <option>Чернігівська область</option>
+          </select>
+          <select v-model="subject">
+            <option value="Заклад вищої освіти">Заклади вищої освіти</option>
+            <option value="Заклад фахової передвищої освіти">Заклади фахової передвищої освіти</option>
+            <option value="Заклад професійної (професійно-технічної) освіти">Заклади професійної (професійно-технічної) освіти</option>
+            <option value="Заклад загальної середньої освіти">Заклади загальної середньої освіти</option>
+            <option>Наукові інститути (установи)</option>
+          </select>
+          <label>Код закладу в ЄДЕБО*</label>
+          <input type="number" min="1" max="50000" class="valid name" ref="educationSubjectNumberInput" v-model="educationSubjectNumber" v-on:focusout="handleFocusoutEducationSubjectNumber" />
+          <div class="error error-name" v-if="checkEducationSubjectNumber && validateInputEducationSybjectNumber('Код закладу', educationSubjectNumber, 'educationSubjectNumberInput')">
+            {{validateInputEducationSybjectNumber('Код закладу', educationSubjectNumber, 'educationSubjectNumberInput').message}}
+          </div>
+          <label>Повна назва закладу освіти*</label>
+          <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
+          <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
+            {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+          </div>
+          <label>Коротка назва закладу освіти</label>
+          <input type="text" class="valid name" ref="shortEducationSubjectInput" v-model="shortEducationSubject" v-on:focusout="handleFocusoutShortEducationSubject" />
+          <label>Ідентифікаційний код*</label>
+          <input type="text" class="valid" ref="taxNumberInput" v-model="taxNumber" v-on:focusout="handleFocusoutTaxNumber" />
+          <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
+            {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
+          </div>
+          <label>Тип закладу освіти*</label>
+          <input type="text" class="valid name" ref="educationTypeInput" v-model="educationType" v-on:focusout="handleFocusoutEducationType" />
+          <div class="error error-name" v-if="checkEducationType && validateInputEducationType('Заклад освіти', educationType, 'educationTypeInput')">
+            {{validateInputEducationType('Заклад освіти', educationType, 'educationTypeInput').message}}
+          </div>
+          <label>Форма власності*</label>
+          <input type="text" class="valid name" ref="ownerInput" v-model="owner" v-on:focusout="handleFocusoutOwner" />
+          <div class="error error-name" v-if="checkOwner && validateInputOwner('Форма власності', owner, 'ownerInput')">
+            {{validateInputOwner('Форма власності', owner, 'ownerInput').message}}
+          </div>
+          <label>Найменування органу, до сфери управління якого належить заклад освіти</label>
+          <input type="text" class="valid name" ref="managementInput" v-model="management" v-on:focusout="handleFocusoutManagement" />
+          <label>Адреса*</label>
+          <input type="text" class="valid name" ref="addressInput" v-model="address" v-on:focusout="handleFocusoutAddress" />
+          <div class="error error-name" v-if="checkAddress && validateInputAddress('Адреса', address, 'addressInput')">
+            {{validateInputAddress('Адреса', address, 'addressInput').message}}
+          </div>
+          <label>Телефон / факс*</label>
+          <input type="text" class="valid name" ref="phoneInput" v-model="phone" v-on:focusout="handleFocusoutPhone" />
+          <div class="error error-name" v-if="checkPhone && validateInputPhone('Телефон', phone, 'phoneInput')">
+            {{validateInputPhone('Телефон', phone, 'phoneInput').message}}
+          </div>
+          <label>Поштовий індекс*</label>
+          <input type="text" class="valid name" ref="postcodeInput" v-model="postcode" v-on:focusout="handleFocusoutPostcode" />
+          <div class="error error-name" v-if="checkPostcode && validateInputPostcode('Індекс', postcode, 'postcodeInput')">
+            {{validateInputPostcode('Індекс', postcode, 'postcodeInput').message}}
+          </div>
+          <label>Електронна пошта*</label>
+          <input type="text" class="valid name" ref="emailInput" v-model="email" v-on:focusout="handleFocusoutEmail" />
+          <div class="error error-name" v-if="checkEmail && validateInputEmail('Пошта', email, 'emailInput')">
+            {{validateInputEmail('Пошта', email, 'emailInput').message}}
+          </div>
+          <label>Сайт</label>
+          <input type="text" class="valid name" ref="siteInput" v-model="site" v-on:focusout="handleFocusoutSite" />
+          <label>Рік заснування</label>
+          <input type="number" min="1400" max="2021" class="valid name" ref="yearInput" v-model="year" v-on:focusout="handleFocusoutYear" />
         </div>
-        <label>Повна назва закладу освіти*</label>
-        <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
-        <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
-          {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+        <h3>Дані керівника закладу освіти</h3>
+        <div class="person-info">
+          <label>Посада*</label>
+          <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />   
+          <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
+            {{validateInputPosition('Посада', position, 'positionInput').message}}
+          </div> 
+          <label>Прізвище*</label>
+          <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+          <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+            {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+          </div>
+          <label>Ім'я*</label>
+          <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+          <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+            {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+          </div>
+          <label>По батькові</label>
+          <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+          <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+            {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+          </div>
+          <input type="checkbox" ref="fatherNameCheckbox" v-on:click="handleCheckboxClick" />
+          <label style="display: inline">Підтверджую, по батькові відсутнє</label>
+          <br/>
+          <label>Серія паспорта*</label>
+          <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
+          <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
+            {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
+          </div>
+          <input type="checkbox" ref="passportCheckbox" v-on:click="handlePassportCheckboxClick" />
+          <label>Паспорт старого зразка</label>
+          <br/>
+          <label>Номер паспорта*</label>
+          <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
+          <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
+            {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
+          </div> 
         </div>
-        <label>Коротка назва закладу освіти</label>
-        <input type="text" class="valid name" ref="shortEducationSubjectInput" v-model="shortEducationSubject" v-on:focusout="handleFocusoutShortEducationSubject" />
-        <label>Ідентифікаційний код*</label>
-        <input type="text" class="valid" ref="taxNumberInput" v-model="taxNumber" v-on:focusout="handleFocusoutTaxNumber" />
-        <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
-          {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
-        </div>
-        <label>Тип закладу освіти*</label>
-        <input type="text" class="valid name" ref="educationTypeInput" v-model="educationType" v-on:focusout="handleFocusoutEducationType" />
-        <div class="error error-name" v-if="checkEducationType && validateInputEducationType('Заклад освіти', educationType, 'educationTypeInput')">
-          {{validateInputEducationType('Заклад освіти', educationType, 'educationTypeInput').message}}
-        </div>
-        <label>Форма власності*</label>
-        <input type="text" class="valid name" ref="ownerInput" v-model="owner" v-on:focusout="handleFocusoutOwner" />
-        <div class="error error-name" v-if="checkOwner && validateInputOwner('Форма власності', owner, 'ownerInput')">
-          {{validateInputOwner('Форма власності', owner, 'ownerInput').message}}
-        </div>
-        <label>Найменування органу, до сфери управління якого належить заклад освіти</label>
-        <input type="text" class="valid name" ref="managementInput" v-model="management" v-on:focusout="handleFocusoutManagement" />
-        <label>Адреса*</label>
-        <input type="text" class="valid name" ref="addressInput" v-model="address" v-on:focusout="handleFocusoutAddress" />
-        <div class="error error-name" v-if="checkAddress && validateInputAddress('Адреса', address, 'addressInput')">
-          {{validateInputAddress('Адреса', address, 'addressInput').message}}
-        </div>
-        <label>Телефон / факс*</label>
-        <input type="text" class="valid name" ref="phoneInput" v-model="phone" v-on:focusout="handleFocusoutPhone" />
-        <div class="error error-name" v-if="checkPhone && validateInputPhone('Телефон', phone, 'phoneInput')">
-          {{validateInputPhone('Телефон', phone, 'phoneInput').message}}
-        </div>
-        <label>Поштовий індекс*</label>
-        <input type="text" class="valid name" ref="postcodeInput" v-model="postcode" v-on:focusout="handleFocusoutPostcode" />
-        <div class="error error-name" v-if="checkPostcode && validateInputPostcode('Індекс', postcode, 'postcodeInput')">
-          {{validateInputPostcode('Індекс', postcode, 'postcodeInput').message}}
-        </div>
-        <label>Електронна пошта*</label>
-        <input type="text" class="valid name" ref="emailInput" v-model="email" v-on:focusout="handleFocusoutEmail" />
-        <div class="error error-name" v-if="checkEmail && validateInputEmail('Пошта', email, 'emailInput')">
-          {{validateInputEmail('Пошта', email, 'emailInput').message}}
-        </div>
-        <label>Сайт</label>
-        <input type="text" class="valid name" ref="siteInput" v-model="site" v-on:focusout="handleFocusoutSite" />
-        <label>Рік заснування</label>
-        <input type="number" min="1400" max="2021" class="valid name" ref="yearInput" v-model="year" v-on:focusout="handleFocusoutYear" />
-      </div>
-      <h3>Дані керівника закладу освіти</h3>
-      <div class="person-info">
-        <label>Посада*</label>
-        <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />   
-        <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
-          {{validateInputPosition('Посада', position, 'positionInput').message}}
-        </div> 
-        <label>Прізвище*</label>
-        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
-        </div>
-        <label>Ім'я*</label>
-        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-        </div>
-        <label>По батькові</label>
-        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handleCheckboxClick" />
-        <label style="display: inline-block">Підтверджую, по батькові відсутнє</label>
-      </div>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Редагувати" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі cуб'єктів освітньої діяльності." />
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Редагувати" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі cуб'єктів освітньої діяльності." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -96,42 +150,45 @@ import MessagePopup from '../popup/MessagePopup.vue'
 
 export default {
   name: 'UpdateEducationalActivitySubject',
+  props: ['result'],
   components: {
     MessagePopup
   },
   data() {
     return {
+      region: this.result.region,
+      subject: this.result.global_type,
       checkLastName: false,
-      lastName: null,
-      isLastNameValid: false,
+      lastName: this.result.surname,
+      isLastNameValid: true,
       checkFirstName: false,
-      firstName: null,
-      isFirstNameValid: false,
+      firstName: this.result.name,
+      isFirstNameValid: true,
       checkFatherName: false,
-      fatherName: null,
-      isFatherNameValid: false,
-      educationSubjectNumber: null,
-      educationSubject: null,
-      shortEducationSubject: null,
+      fatherName: this.result.patronymic,
+      isFatherNameValid: true,
+      educationSubjectNumber: this.result.code_edbo,
+      educationSubject: this.result.long_name,
+      shortEducationSubject: this.result.short_name,
       checkEducationSubjectNumber: false,
       checkEducationSubject: false,
       checkShortEducationSubject: false,
-      isEducationSubjectNumberValid: false,
-      isEducationSubjectValid: false,
-      isShortEducationSubjectValid: false,
-      isTaxNumberValid: false,
-      taxNumber: null,
+      isEducationSubjectNumberValid: true,
+      isEducationSubjectValid: true,
+      isShortEducationSubjectValid: true,
+      isTaxNumberValid: true,
+      taxNumber: this.result.code_identification,
       checkTaxNumber: false,
-      isEmailValid: false,
-      email: null,
+      isEmailValid: true,
+      email: this.result.email,
       checkEmail: false,
-      educationType: null,
-      owner: null,
-      management: null,
-      address: null,
-      phone: null,
-      site: null,
-      year: null,
+      educationType: this.result.type,
+      owner: this.result.form,
+      management: this.result.unit_institution,
+      address: this.result.long_adress,
+      phone: this.result.phone,
+      site: this.result.site,
+      year: this.result.year_foundation,
       checkEducationType: null,
       checkOwner: null,
       checkManagement: null,
@@ -139,21 +196,42 @@ export default {
       checkPhone: null,
       checkSite: null,
       checkYear: null,
-      isEducationTypeValid: null,
-      isOwnerValid: null,
-      isManagementValid: null,
-      isAddressValid: null,
-      isPhoneValid: null,
-      isSiteValid: null,
-      isYearValid: null,
+      isEducationTypeValid: true,
+      isOwnerValid: true,
+      isManagementValid: true,
+      isAddressValid: true,
+      isPhoneValid: true,
+      isSiteValid: true,
+      isYearValid: true,
       checkPostcode: false,
-      postcode: null,
-      isPostcodeValid: false,
+      postcode: this.result.postal_code,
+      isPostcodeValid: true,
       checkPosition: false,
-      position: null,
-      isPositionValid: false,
-      isPopup: false
+      position: this.result.position,
+      isPositionValid: true,
+      isPassportNumberValid: true,
+      isPassportSeriesValid: true,
+      checkPassportNumber: false,
+      checkPassportSeries: false,
+      passportNumber: this.result.p_number,
+      passportSeries: this.result.p_series,
+      isPopup: false,
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
+    this.$nextTick(()=>{
+      if (this.passportSeries) {
+        this.$refs.passportCheckbox.checked = true;
+        this.$refs.passportSeriesInput.disabled = false;
+      }
+      if (!this.fatherName) {
+        this.$refs.fatherNameCheckbox.checked = true;
+        this.$refs.fatherNameInput.disabled = true;
+      }
+    });
   },
   methods: {
      handleFocusoutEmail() {
@@ -206,6 +284,12 @@ export default {
     },
     handleFocusoutPosition() {
       this.checkPosition = true;
+    },
+    handleFocusoutPassportSeries() {
+      this.checkPassportSeries = true;
+    },
+    handleFocusoutPassportNumber() {
+      this.checkPassportNumber = true;
     },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
@@ -288,6 +372,17 @@ export default {
       this.isEmailValid = message ? false : true; 
       return message;
     },
+    validateInputPassportSeries(field, series, elementName) {
+      const message = Validation.validateSeries(field, series, this.$refs[elementName]);
+      this.isPassportSeriesValid = message ? false : true;
+      return message;
+    },
+    validateInputPassportNumber(field, number, elementName) {
+      const amount = this.$refs.passportSeriesInput.disabled ? 9 : 6;
+      const message = Validation.validatePassportNumber(field, number, this.$refs[elementName], amount);
+      this.isPassportNumberValid = message ? false : true;
+      return message;
+    },
     handleSubmitForm(e) {
       e.preventDefault();
       this.checkSeries = true;
@@ -315,29 +410,65 @@ export default {
       } else {
         this.isFatherNameValid = true;
       }
-      console.log(this.isLastNameValid)
-      console.log(this.isFirstNameValid)
-      console.log(this.isFatherNameValid)
-      console.log(this.isPostcodeValid)
-      console.log(this.isEducationTypeValid)
-      console.log(this.isPhoneValid)
-      console.log(this.isPositionValid)
-      console.log(this.isEmailValid)
-      console.log(this.isEducationSubjectNumberValid)
-      console.log(this.isEducationSubjectValid)
-      console.log(this.isTaxNumberValid)
-      console.log(this.isOwnerValid)
-      console.log(this.isAddressValid)
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid && this.isPostcodeValid
         && this.isEducationTypeValid && this.isPhoneValid  && this.isPositionValid && this.isEmailValid
         && this.isEducationSubjectNumberValid && this.isEducationSubjectValid 
-        && this.isTaxNumberValid && this.isOwnerValid && this.isAddressValid) {
-        this.isPopup = true;
+        && this.isTaxNumberValid && this.isOwnerValid && this.isAddressValid
+        && this.isPassportNumberValid && this.isPassportSeriesValid) {
+        const url = new URL(`${window.location.origin}/api/institutions/update`);
+        const body = {
+          institution_id: this.result.institution_id,
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          p_series: this.passportSeries ? this.passportSeries : '', 
+          p_number: this.passportNumber,
+          position: this.position,
+          code_edbo: this.educationSubjectNumber, 
+          long_name: this.educationSubject, 
+          short_name: this.shortEducationSubject ? this.shortEducationSubject : '', 
+          code_identification: this.taxNumber, 
+          type: this.educationType, 
+          form: this.owner, 
+          adress: this.address, 
+          region: this.region, 
+          phone: this.phone, 
+          email: this.email, 
+          site: this.site ? this.site : '', 
+          year_foundation: this.year ? this.year : '', 
+          unit_institution: this.management ? this.management : '', 
+          postal_code: this.postcode, 
+          global_type: this.subject
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

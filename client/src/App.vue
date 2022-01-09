@@ -56,6 +56,11 @@
               <h4>Додати дані до Реєстру<br/>суб'єктів освітньої діяльності</h4>
             </router-link>
           </li>
+          <li>
+            <router-link to="/update-search-educational-activity-subject">
+              <h4>Редагувати дані у Реєстрі<br/>суб'єктів освітньої діяльності</h4>
+            </router-link>
+          </li>
            <li>
             <router-link to="/add-person-info">
               <h4>Додати дані осіб</h4>
