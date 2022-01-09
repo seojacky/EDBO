@@ -20,12 +20,7 @@
           {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
         </div>
         <input type="checkbox" v-on:click="handleCheckboxClick" />
-        <label>Підтверджую, по батькові відсутнє</label>
-        <label>Дата народження*</label>
-        <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-        <div class="error" v-if="checkDateOfBirth && validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-          {{validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
-        </div>
+        <label style="display: inline">Підтверджую, по батькові відсутнє</label>
       </div>
       <div class="passport-info">
         <h3>Дані паспорта</h3>
@@ -41,22 +36,12 @@
         <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
         <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
           {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
-        </div> 
-        <label>Орган, що здійснив видачу*</label>
-        <input type="text" class="valid" ref="passportOrganizationInput" v-model="passportOrganization" v-on:focusout="handleFocusoutPassportOrganization" />    
-        <div class="error" v-if="checkPassportOrganization && validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput')">
-          {{validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput').message}}
-        </div> 
-        <label>Дата видачі*</label>
-        <input type="date" class="valid" ref="passportDateInput" v-model="passportDate" v-on:focusout="handleFocusoutPassportDate" />    
-        <div class="error" v-if="checkPassportDate && validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput')">
-          {{validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput').message}}
-        </div>  
+        </div>
       </div>
       <h5>* обов'язкові поля</h5>
       <input type="submit" value="Пошук" />
     </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі документів про освіту." />
+    <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
   </div>
 </template>
 
@@ -77,26 +62,22 @@ export default {
       checkFatherName: false,
       fatherName: null,
       isFatherNameValid: false,
-      checkDateOfBirth: null,
-      dateOfBirth: null,
-      isDateOfBirthValid: false,
       isPassportNumberValid: false,
-      isPassportOrganizationValid: false,
-      isPassportDateValid: false,
       isPassportSeriesValid: false,
       checkPassportNumber: false,
-      checkPassportOrganization: false,
-      checkPassportDate: false,
       checkPassportSeries: false,
       passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
       passportSeries: null,
-      isPopup: false
+      error: '',
+      isErrorPopup: false,
+      role: null
     }
   },
   components: {
     MessagePopup
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutLastName() {
@@ -113,15 +94,6 @@ export default {
     },
     handleFocusoutPassportNumber() {
       this.checkPassportNumber = true;
-    },
-    handleFocusoutPassportOrganization() {
-      this.checkPassportOrganization = true;
-    },
-    handleFocusoutPassportDate() {
-      this.checkPassportDate = true;
-    },
-    handleFocusoutDateOfBirth() {
-      this.checkDateOfBirth = true;
     },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
@@ -154,16 +126,6 @@ export default {
       this.isPassportNumberValid = message ? false : true;
       return message;
     },
-    validateInputPassportOrganization(field, number, elementName) {
-      const message = Validation.validatePassportOrganization(field, number, this.$refs[elementName]);
-      this.isPassportOrganizationValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportDate(field, number, elementName) {
-      const message = Validation.validateDate(field, number, this.$refs[elementName]);
-      this.isPassportDateValid = message ? false : true;
-      return message;
-    },
     validateInputName(field, name, elementName) {
       const message = Validation.validateName(field, name, this.$refs[elementName]);
       if (field === 'Прізвище') {
@@ -175,19 +137,11 @@ export default {
       }
       return message;
     },
-    validateInputDateOfBirth(field, date, elementName) {
-      const message = Validation.validateDate(field, date, this.$refs[elementName]);
-      this.isDateOfBirthValid = message ? false : true;
-      return message;
-    },
     handleSubmitForm(e) {
       e.preventDefault();
       this.checkLastName = true;
       this.checkFirstName = true;
-      this.checkDateOfBirth = true;
       this.checkPassportNumber = true;
-      this.checkPassportOrganization = true;
-      this.checkPassportDate = true;
       if (!this.$refs.passportSeriesInput.disabled) {
         this.checkPassportSeries = true;
       } else {
@@ -199,15 +153,48 @@ export default {
         this.isFatherNameValid = true;
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
-        && this.isDateOfBirthValid && this.isPassportNumberValid 
-        && this.isPassportOrganizationValid && this.isPassportDateValid
-        && this.isPassportSeriesValid) {
-        this.$router.push({ path: '/update-person-info' });
+        && this.isPassportNumberValid && this.isPassportSeriesValid) {
+        const url = new URL(`${window.location.origin}/api/persons`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          p_number: this.passportNumber,
+          p_series: this.passportSeries ? this.passportSeries : ''
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+           console.log(data)
+            const result = {
+              personId: data.person_id,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              passportNumber: data.number,
+              passportSeries: data.series,
+              dateOfBirth: data.birthday_date,
+              passportDate: data.issue_date,
+              passportOrganization: data.authority_code,
+            };
+            this.$router.push({ name: 'UpdatePersonInfo', params: { result: result }});
+         })
+        .then(() => {this.isPopup = true;})
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
-    updatePopup(isPopup) {
+    updateErrorPopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
     }
   }
 }

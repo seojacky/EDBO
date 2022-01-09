@@ -4,9 +4,14 @@ const { SqlError, InvalidRequestError } = require('../utils/errors');
 const getOnePerson = async({ name, surname, patronymic, p_series, p_number }) => {
     try {
         const client = createConnection();
-        const result = await client.query(`SELECT * FROM public.persons WHERE series = '${p_series}' AND surname = '${surname}' AND name = '${name}' AND patronymic = '${patronymic}' AND number = '${p_number}'`);
+        const person = await client.query(`SELECT * FROM public.persons WHERE series = '${p_series}' AND surname = '${surname}' AND name = '${name}' AND patronymic = '${patronymic}' AND number = '${p_number}'`);
+        const authority_code = await client.query(`SELECT code FROM public.authorities WHERE authority_id = '${person.rows[0].authorities_fk}'`);
         client.end();
-        return result.rows[0];
+        const result = {
+            ...person.rows[0],
+            authority_code: authority_code.rows[0].code
+        }
+        return result;
     } catch (err) {
         throw new SqlError(err.message)
     }
