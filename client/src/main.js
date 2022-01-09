@@ -65,7 +65,8 @@ const routes = [
   {
     path: '/journal',
     name: 'Journal',
-    component: Journal
+    component: Journal,
+    props: true
   },
   {
     path: '/education-documents',

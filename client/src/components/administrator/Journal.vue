@@ -1,43 +1,63 @@
 <template>
   <div class="journal">
-    <h1>Журнал дій реєстратора</h1>
-    <table v-if="length > 0">
-      <tr>
-        <th>Дата і час</th>
-        <th>Дія</th>
-        <th>Таблиця</th>
-        <th>id запису</th>
-      </tr>
-      <tr>
-        <td>12.12.2021 12:35:14</td>
-        <td>Create</td>
-        <td>Студентський квиток</td>
-        <td>1234635</td>
-      </tr>
-      <tr>
-        <td>12.12.2021 12:35:14</td>
-        <td>Create</td>
-        <td>Студентський квиток</td>
-        <td>1234635</td>
-      </tr>
-      <tr>
-        <td>12.12.2021 12:35:14</td>
-        <td>Create</td>
-        <td>Студентський квиток</td>
-        <td>1234635</td>
-      </tr>
-    </table>
-    <h4 v-else>Журнал дій для цього реєстратора пустий</h4>
+    <div v-if="role === 'administrator' && registrator">
+      <h1>Журнал дій реєстратора</h1>
+      <h2>{{registrator.surname}} {{registrator.name}} {{registrator.patronymic}}</h2>
+      <table v-if="logs.length > 0">
+        <tr>
+          <th>Дата і час</th>
+          <th>Дія</th>
+          <th>Таблиця</th>
+          <th>id запису</th>
+        </tr>
+        <tr v-for="item in logs" v-bind:key="item.log_id">
+          <td>{{item.date.split('T')[0]}} {{item.date.split('T')[1].split('.')[0]}}</td>
+          <td>{{item.modify_type}}</td>
+          <td>{{item.table_name}}</td>
+          <td>{{item.id_row}}</td>
+        </tr>
+      </table>
+      <h4 v-else>Журнал дій для цього реєстратора пустий</h4>
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Journal',
+  props: ['registrator'],
   data() {
     return {
-      length: 1
+      logs: [],
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
+    const url = new URL(`${window.location.origin}/api/registrators/journal?registrator_id=${this.registrator.registrar_id}`);
+    fetch(url, {method: 'GET', 
+    headers: {
+      'Content-Type': 'application/json',
+      'authorization': `Bearer ${localStorage.getItem('token')}`
+      }})
+     .then(response => {
+       if (response.status === 200) {
+         return response.json();
+       } else {
+         throw new Error('За вашим запитом нічого не знайдено.');
+       }
+     })
+     .then(data => {
+       console.log(data)
+        this.$set(this.$data, 'logs', data);
+     })
+    .catch((error) => {
+      this.error = error.message;
+      console.log(this.error)
+    });
   }
 }
 </script>

@@ -1,86 +1,91 @@
 <template>
   <div class="administartor-page">
-    <h1>Сторінка адміністратора</h1>
-    <h3>Запити на набуття ролі реєстратора</h3>
-    <div class="request-list" v-if="requests.length > 0">
-      <table>
-        <tr>
-          <th>Прізвище</th>
-          <th>Ім'я</th>
-          <th>По батькові</th>
-          <th>Дата народження</th>
-          <th>Місце роботи</th>
-          <th>Посада</th>
-          <th>Email</th>
-          <th>Серія паспорта</th>
-          <th>Номер паспорта</th>
-          <th>Орган, що здійснив видачу паспорта</th>
-          <th>Дата видачі паспотра</th>
-          <th>Реєстраційний номер картки платника податків</th>
-          <th></th>
-        </tr>
-        <tr v-for="item in requests" v-bind:key="item.taxNumber">
-          <td>{{item.lastName}}</td>
-          <td>{{item.firstName}}</td>
-          <td>{{item.fatherName}}</td>
-          <td>{{item.dateOfBirth}}</td>
-          <td>{{item.organization}}</td>
-          <td>{{item.position}}</td>
-          <td>{{item.email}}</td>
-          <td>{{item.passportSeries}}</td>
-          <td>{{item.passportNumber}}</td>
-          <td>{{item.passportOrganization}}</td>
-          <td>{{item.passportDate}}</td>
-          <td>{{item.taxNumber}}</td>
-          <td>
-            <span class='button' v-on:click="handleBtnAcceptClick(item)">Прийняти</span>
-            <span class='button' v-on:click="handleBtnRejectClick(item)">Відхилити</span>
-          </td>
-        </tr>
-      </table>
+    <div v-if="role === 'administrator'">
+      <h1>Сторінка адміністратора</h1>
+      <h3>Запити на набуття ролі реєстратора</h3>
+      <div class="request-list" v-if="requests.length > 0">
+        <table>
+          <tr>
+            <th>Прізвище</th>
+            <th>Ім'я</th>
+            <th>По батькові</th>
+            <th>Дата народження</th>
+            <th>Місце роботи</th>
+            <th>Посада</th>
+            <th>Email</th>
+            <th>Серія паспорта</th>
+            <th>Номер паспорта</th>
+            <th>Орган, що здійснив видачу паспорта</th>
+            <th>Дата видачі паспотра</th>
+            <th>Реєстраційний номер картки платника податків</th>
+            <th></th>
+          </tr>
+          <tr v-for="item in requests" v-bind:key="item.query_id">
+            <td>{{item.surname}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.patronymic}}</td>
+            <td>{{item.birthday_date.split('T')[0]}}</td>
+            <td>{{item.organization_name}}</td>
+            <td>{{item.position}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.series}}</td>
+            <td>{{item.number}}</td>
+            <td>{{item.authority_code}}</td>
+            <td>{{item.issue_date.split('T')[0]}}</td>
+            <td>{{item.identification_code}}</td>
+            <td>
+              <span class='button' v-on:click="handleBtnAcceptClick(item)">Прийняти</span>
+              <span class='button' v-on:click="handleBtnRejectClick(item)">Відхилити</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <h4 v-else>Немає запитів</h4>
+      <h3>Список реєстраторів</h3>
+      <div class="registers-list" v-if="registrators.length > 0">
+        <table>
+          <tr>
+            <th>Прізвище</th>
+            <th>Ім'я</th>
+            <th>По батькові</th>
+            <th>Дата народження</th>
+            <th>Місце роботи</th>
+            <th>Посада</th>
+            <th>Email</th>
+            <th>Серія паспорта</th>
+            <th>Номер паспорта</th>
+            <th>Орган, що здійснив видачу паспорта</th>
+            <th>Дата видачі паспотра</th>
+            <th>Реєстраційний номер картки платника податків</th>
+            <th></th>
+          </tr>
+          <tr v-for="item in registrators" v-bind:key="item.registrar_id">
+            <td>{{item.surname}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.patronymic}}</td>
+            <td>{{item.birthday_date.split('T')[0]}}</td>
+            <td>{{item.organization_name}}</td>
+            <td>{{item.position}}</td>
+            <td>{{item.email}}</td>
+            <td>{{item.series}}</td>
+            <td>{{item.number}}</td>
+            <td>{{item.authority_code}}</td>
+            <td>{{item.issue_date.split('T')[0]}}</td>
+            <td>{{item.identification_code}}</td>
+            <td>
+              <span class='button' v-on:click="handleBtnUpdateClick(item)">Редагувати</span>
+              <span class='button' v-on:click="handleBtnActivateClick(item)" v-if="!item.status">Активувати</span>
+              <span class='button' v-on:click="handleBtnDeactivateClick(item)" v-if="item.status">Деактивувати</span>
+              <span class='button' v-on:click="handleBtnJournalClick(item)">Журнал</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <h4 v-else>Немає реєстраторів</h4>
     </div>
-    <h4 v-else>Немає запитів</h4>
-    <h3>Список реєстраторів</h3>
-    <div class="registers-list" v-if="registrators.length > 0">
-      <table>
-        <tr>
-          <th>Прізвище</th>
-          <th>Ім'я</th>
-          <th>По батькові</th>
-          <th>Дата народження</th>
-          <th>Місце роботи</th>
-          <th>Посада</th>
-          <th>Email</th>
-          <th>Серія паспорта</th>
-          <th>Номер паспорта</th>
-          <th>Орган, що здійснив видачу паспорта</th>
-          <th>Дата видачі паспотра</th>
-          <th>Реєстраційний номер картки платника податків</th>
-          <th></th>
-        </tr>
-        <tr v-for="item in registrators" v-bind:key="item.taxNumber">
-          <td>{{item.lastName}}</td>
-          <td>{{item.firstName}}</td>
-          <td>{{item.fatherName}}</td>
-          <td>{{item.dateOfBirth}}</td>
-          <td>{{item.organization}}</td>
-          <td>{{item.position}}</td>
-          <td>{{item.email}}</td>
-          <td>{{item.passportSeries}}</td>
-          <td>{{item.passportNumber}}</td>
-          <td>{{item.passportOrganization}}</td>
-          <td>{{item.passportDate}}</td>
-          <td>{{item.taxNumber}}</td>
-          <td>
-            <span class='button' v-on:click="handleBtnUpdateClick(item)">Редагувати</span>
-            <span class='button' v-on:click="handleBtnActivateClick(item)" v-if="!item.isActive">Активувати</span>
-            <span class='button' v-on:click="handleBtnDeactivateClick(item)" v-if="item.isActive">Деактивувати</span>
-            <span class='button' v-on:click="handleBtnJournalClick(item)">Журнал</span>
-          </td>
-        </tr>
-      </table>
+    <div v-else>
+      <h2>403 Forbidden</h2>
     </div>
-    <h4 v-else>Немає реєстраторів</h4>
   </div>
 </template>
 
@@ -89,75 +94,90 @@ export default {
   name: 'AdministratorPage',
   data() {
     return {
-      requests: [
-        {
-          id: 1,
-          lastName: 'Прізвище',
-          firstName: 'Ім\'я',
-          fatherName: 'По-Батькові',
-          dateOfBirth: '1972-12-12',
-          organization: 'Місце роботи 1',
-          position: 'Держслужбовець',
-          email: 'email@gmail.com',
-          taxNumber: '5432112345',
-          passportNumber: '123456789',
-          passportOrganization: '1234',
-          passportDate: `2020-05-04`,
-          passportSeries: null,
-        },
-        {
-          id: 2,
-          lastName: 'Прізвище',
-          firstName: 'Ім\'я',
-          fatherName: 'По-Батькові',
-          dateOfBirth: '1972-12-12',
-          organization: 'Місце роботи 1',
-          position: 'Держслужбовець',
-          email: 'email@gmail.com',
-          taxNumber: '1234554321',
-          passportNumber: '123456789',
-          passportOrganization: '1234',
-          passportDate: `2020-05-04`,
-          passportSeries: null,
-        }
-      ],
-      registrators: [
-        {
-          id: 1,
-          lastName: 'Прізвище',
-          firstName: 'Ім\'я',
-          fatherName: 'По-Батькові',
-          dateOfBirth: '1972-12-12',
-          organization: 'Місце роботи 1',
-          position: 'Держслужбовець',
-          email: 'email@gmail.com',
-          taxNumber: '1234554321',
-          passportNumber: '123456789',
-          passportOrganization: '1234',
-          passportDate: `2020-05-04`,
-          passportSeries: null,
-          isActive: true
-        },
-        {
-          id: 2,
-          lastName: 'Прізвище',
-          firstName: 'Ім\'я',
-          fatherName: 'По-Батькові',
-          dateOfBirth: '1972-12-12',
-          organization: 'Місце роботи 1',
-          position: 'Держслужбовець',
-          email: 'email@gmail.com',
-          taxNumber: '5432112345',
-          passportNumber: '123456',
-          passportOrganization: '1234',
-          passportDate: `2020-05-04`,
-          passportSeries: 'ВВ',
-          isActive: false
-        }
-      ]
+      requests: [],
+      registrators: [],
+      role: null
     }
   },
+  mounted() {
+    this.role = localStorage.getItem('role');
+    this.getRegistrators();
+    this.getRequests();
+  },
   methods: {
+    getRegistrators() {
+      const url = new URL(`${window.location.origin}/api/registrators`);
+      fetch(url, {method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+        }})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+         console.log(data)
+          this.$set(this.$data, 'registrators', data);
+       })
+      .then(() => {this.isPopup = true;})
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
+    },
+    getRequests() {
+      const url = new URL(`${window.location.origin}/api/registrators/queries`);
+      fetch(url, {method: 'GET', 
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+        }})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+         console.log(data)
+          this.$set(this.$data, 'requests', data);
+       })
+      .then(() => {this.isPopup = true;})
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
+    },
+    changeStatus(registrar_id) {
+      const url = new URL(`${window.location.origin}/api/registrators/status?registrator_id=${registrar_id}`);
+      fetch(url, {method: 'PATCH', 
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+        }})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+         console.log(data)
+       })
+      .then(() => {
+        this.getRegistrators();
+      })
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
+    },
     handleBtnAcceptClick(item) {
       console.log('accept');
       const index = this.requests.indexOf(item);
@@ -175,16 +195,14 @@ export default {
     },
     handleBtnActivateClick(item) {
       console.log('activate')
-      item.isActive = true;
+      this.changeStatus(item.registrar_id)
     },
     handleBtnDeactivateClick(item) {
       console.log('deactivate')
-      item.isActive = false;
+      this.changeStatus(item.registrar_id)
     },
     handleBtnJournalClick(item) {
-      console.log('journal')
-      console.log(item)
-      this.$router.push({path: '/journal'})
+      this.$router.push({name: 'Journal', params: {registrator: item}})
     }
   }
 }
