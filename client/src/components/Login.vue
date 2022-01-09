@@ -28,7 +28,7 @@ export default {
   methods: {
     handleSubmitForm(e) {
       e.preventDefault();
-      if (!this.error) {
+      if (this.login && this.password) {
         const url = new URL(`${window.location.origin}/api/auth/login`);
         const body = {
           username: this.login,

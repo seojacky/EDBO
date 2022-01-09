@@ -522,7 +522,7 @@ export default {
         const body = {
           name: this.firstName,
           surname: this.lastName,
-          patronymic: this.fatherName,
+          patronymic: this.fatherName ? this.fatherName : '',
           p_number: this.passportNumber,
           p_series: this.passportSeries ? this.passportSeries : '',
           number: this.number,

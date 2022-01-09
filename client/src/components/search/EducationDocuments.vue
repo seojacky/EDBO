@@ -175,7 +175,7 @@ export default {
         const params = {
           name: this.firstName,
           surname: this.lastName,
-          patronymic: this.fatherName,
+          patronymic: this.fatherName ? this.fatherName : '',
           number: this.number,
           series: this.series,
           type: this.documentType,

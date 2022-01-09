@@ -257,7 +257,7 @@ export default {
         const body = {
           name: this.firstName,
           surname: this.lastName,
-          patronymic: this.fatherName,
+          patronymic: this.fatherName ? this.fatherName : '',
           number: this.number,
           year_graduation: this.year,
           position: this.position,
