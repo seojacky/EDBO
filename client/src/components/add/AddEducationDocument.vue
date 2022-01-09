@@ -1,131 +1,122 @@
 <template>
   <div class="education-documents">
-    <h1>Додати дані до Реєстру документів про освіту</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані документа про освіту</h3>
-      <select v-model="educationType" v-on:change="handleSelect">
-        <option>Документи про вищу освіту</option>
-        <option>Документи про професійну (професійно-технічну) освіту</option>
-        <option>Документи про загальну середню освіту</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
-        <option>Диплом МАГІСТРА</option>
-        <option>Диплом СПЕЦІАЛІСТА</option>
-        <option>Диплом БАКАЛАВРА</option>
-        <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
-        <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
-        <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
-        <option>Свідоцтво про визнання іноземного документа про освіту</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
-        <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
-        <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
-        <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
-        <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
-        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
-        <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
-        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
-        <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
-      </select>
-      <label>Рік закінчення закладу освіти</label>
-      <select v-model="year">
-        <option>2021</option>
-        <option>2020</option>
-        <option>2019</option>
-        <option>2018</option>
-        <option>2017</option>
-        <option>2016</option>
-        <option>2015</option>
-        <option>2014</option>
-        <option>2013</option>
-        <option>2012</option>
-        <option>2011</option>
-        <option>2010</option>
-        <option>2009</option>
-      </select>
-      <div class="document-info">
-        <label>Дата видачі документу</label>
-        <input type="date" class="valid name" ref="dateInput" v-model="date" v-on:focusout="handleFocusoutDate" />
-        <div class="error" v-if="checkDate && validateInputDate('Дата народження', date, 'dateInput')">
-          {{validateInputDate('Дата видачі документу', date, 'dateInput').message}}
+    <div v-if="role === 'registrator'">
+      <h1>Додати дані до Реєстру документів про освіту</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані документа про освіту</h3>
+        <select v-model="educationType" v-on:change="handleSelect">
+          <option>Документи про вищу освіту</option>
+          <option>Документи про професійну (професійно-технічну) освіту</option>
+          <option>Документи про загальну середню освіту</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
+          <option>Диплом МАГІСТРА</option>
+          <option>Диплом СПЕЦІАЛІСТА</option>
+          <option>Диплом БАКАЛАВРА</option>
+          <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
+          <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
+          <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
+          <option>Свідоцтво про визнання іноземного документа про освіту</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
+          <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
+          <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
+          <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
+          <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
+          <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
+          <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
+          <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
+          <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
+        </select>
+        <label>Рік закінчення закладу освіти</label>
+        <select v-model="year">
+          <option>2021</option>
+          <option>2020</option>
+          <option>2019</option>
+          <option>2018</option>
+          <option>2017</option>
+          <option>2016</option>
+          <option>2015</option>
+          <option>2014</option>
+          <option>2013</option>
+          <option>2012</option>
+          <option>2011</option>
+          <option>2010</option>
+          <option>2009</option>
+        </select>
+        <div class="document-info">
+          <label>Дата видачі документу</label>
+          <input type="date" class="valid name" ref="dateInput" v-model="date" v-on:focusout="handleFocusoutDate" />
+          <div class="error" v-if="checkDate && validateInputDate('Дата народження', date, 'dateInput')">
+            {{validateInputDate('Дата видачі документу', date, 'dateInput').message}}
+          </div>
+          <label>Повна назва закладу освіти*</label>
+          <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
+          <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
+            {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+          </div>
         </div>
-        <label>Повна назва закладу освіти*</label>
-        <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
-        <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
-          {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+        <div class="ticket-info">
+          <label>Серія*</label>
+          <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
         </div>
-      </div>
-      <div class="ticket-info">
-        <label>Серія*</label>
-        <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-      </div>
-      <div class="error-container">
-        <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
-          {{validateInputSeries('Серія', series, 'seriesInput').message}}
-        </div>
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
+        <div class="error-container">
+          <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
+            {{validateInputSeries('Серія', series, 'seriesInput').message}}
+          </div>
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div>  
         </div>  
-      </div>  
-      <h3>Дані особи</h3>
-      <div class="person-info">
-        <label>Прізвище*</label>
-        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+        <h3>Дані особи</h3>
+        <div class="person-info">
+          <label>Прізвище*</label>
+          <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+          <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+            {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+          </div>
+          <label>Ім'я*</label>
+          <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+          <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+            {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+          </div>
+          <label>По батькові</label>
+          <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+          <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+            {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+          </div>
+          <input type="checkbox" v-on:click="handleCheckboxClick" />
+          <label>Підтверджую, по батькові відсутнє</label>
         </div>
-        <label>Ім'я*</label>
-        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+        <div class="passport-info">
+          <h3>Дані паспорта</h3>
+          <label>Серія*</label>
+          <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
+          <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
+            {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
+          </div>
+          <input type="checkbox" v-on:click="handlePassportCheckboxClick" />
+          <label>Паспорт старого зразка</label>
+          <br/>
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
+          <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
+            {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
+          </div> 
         </div>
-        <label>По батькові</label>
-        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handleCheckboxClick" />
-        <label>Підтверджую, по батькові відсутнє</label>
-        <label>Дата народження*</label>
-        <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-        <div class="error" v-if="checkDateOfBirth && validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-          {{validateInputDateOfBirth('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
-        </div>
-      </div>
-      <div class="passport-info">
-        <h3>Дані паспорта</h3>
-        <label>Серія*</label>
-        <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
-        <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
-          {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handlePassportCheckboxClick" />
-        <label>Паспорт старого зразка</label>
-        <br/>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
-        <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
-          {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
-        </div> 
-        <label>Орган, що здійснив видачу*</label>
-        <input type="text" class="valid" ref="passportOrganizationInput" v-model="passportOrganization" v-on:focusout="handleFocusoutPassportOrganization" />    
-        <div class="error" v-if="checkPassportOrganization && validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput')">
-          {{validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput').message}}
-        </div> 
-        <label>Дата видачі*</label>
-        <input type="date" class="valid" ref="passportDateInput" v-model="passportDate" v-on:focusout="handleFocusoutPassportDate" />    
-        <div class="error" v-if="checkPassportDate && validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput')">
-          {{validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput').message}}
-        </div>  
-      </div>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Додати до реєстру" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру документів про освіту." />
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Додати до реєстру" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру документів про освіту." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -161,23 +152,20 @@ export default {
       checkDate: null,
       date: null,
       isDateValid: null,
-      checkDateOfBirth: null,
-      dateOfBirth: null,
-      isDateOfBirthValid: null,
       isPassportNumberValid: null,
-      isPassportOrganizationValid: null,
-      isPassportDateValid: null,
       isPassportSeriesValid: null,
       checkPassportNumber: false,
-      checkPassportOrganization: false,
-      checkPassportDate: false,
       checkPassportSeries: false,
       passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
       passportSeries: null,
-      isPopup: false
+      error: '',
+      isPopup: false,
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   components: {
     MessagePopup
@@ -210,15 +198,6 @@ export default {
     handleFocusoutPassportNumber() {
       this.checkPassportNumber = true;
     },
-    handleFocusoutPassportOrganization() {
-      this.checkPassportOrganization = true;
-    },
-    handleFocusoutPassportDate() {
-      this.checkPassportDate = true;
-    },
-    handleFocusoutDateOfBirth() {
-      this.checkDateOfBirth = true;
-    },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
         this.$refs.passportSeriesInput.disabled = false;
@@ -248,16 +227,6 @@ export default {
       const amount = this.$refs.passportSeriesInput.disabled ? 9 : 6;
       const message = Validation.validatePassportNumber(field, number, this.$refs[elementName], amount);
       this.isPassportNumberValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportOrganization(field, number, elementName) {
-      const message = Validation.validatePassportOrganization(field, number, this.$refs[elementName]);
-      this.isPassportOrganizationValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportDate(field, number, elementName) {
-      const message = Validation.validateDate(field, number, this.$refs[elementName]);
-      this.isPassportDateValid = message ? false : true;
       return message;
     },
     validateInputName(field, name, elementName) {
@@ -291,11 +260,6 @@ export default {
       this.isDateValid = message ? false : true;
       return message;
     },
-    validateInputDateOfBirth(field, date, elementName) {
-      const message = Validation.validateDate(field, date, this.$refs[elementName]);
-      this.isDateOfBirthValid = message ? false : true;
-      return message;
-    },
     handleSubmitForm(e) {
       e.preventDefault();
       this.checkSeries = true;
@@ -304,10 +268,7 @@ export default {
       this.checkFirstName = true;
       this.checkEducationSubject = true;
       this.checkDate = true;
-      this.checkDateOfBirth = true;
       this.checkPassportNumber = true;
-      this.checkPassportOrganization = true;
-      this.checkPassportDate = true;
       if (!this.$refs.passportSeriesInput.disabled) {
         this.checkPassportSeries = true;
       } else {
@@ -320,11 +281,51 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid && this.isFatherNameValid 
         && this.isSeriesValid && this.isNumberValid && this.isDateValid
-        && this.isDateOfBirthValid && this.isEducationSubjectValid
-        && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
-        && this.isPassportSeriesValid) {
-        this.isPopup = true;
+        && this.isEducationSubjectValid && this.isPassportNumberValid && this.isPassportSeriesValid) {
+        const url = new URL(`${window.location.origin}/api/diplomas/create`);
+        const body = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          series: this.series,
+          number: this.number,
+          year_graduation: this.year, 
+          p_series: this.passportSeries ? this.passportSeries : '', 
+          p_number: this.passportNumber,
+          date_issue: this.date,
+          institution_name: this.educationSubject,
+          global_type: this.educationType,
+          type: this.documentType
+        };
+        console.log(body)
+        fetch(url, {method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
+    },
+    updatePopup(isPopup) {
+      this.isPopup = isPopup;
+      this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     },
     handleSelect() {
       if (this.educationType === 'Документи про вищу освіту') {
@@ -335,10 +336,6 @@ export default {
         this.documentType = 'СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)';
       }
     },
-    updatePopup(isPopup) {
-      this.isPopup = isPopup;
-      this.$router.go(0);
-    }
   }
 }
 </script>

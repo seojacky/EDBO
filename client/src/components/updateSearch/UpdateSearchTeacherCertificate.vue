@@ -44,9 +44,13 @@
 
 <script>
 import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'UpdateSerarchTeacherCertificates',
+  components: {
+    MessagePopup
+  },
   data() {
     return {
       year: 2021,

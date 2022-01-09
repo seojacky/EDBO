@@ -1,81 +1,87 @@
 <template>
   <div class="education-documents">
-    <h1>Редагувати дані у Реєстрі документів про освіту</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h2>ПІБ</h2>
-      <h3>Дані документа про освіту</h3>
-      <select v-model="educationType" v-on:change="handleSelect">
-        <option>Документи про вищу освіту</option>
-        <option>Документи про професійну (професійно-технічну) освіту</option>
-        <option>Документи про загальну середню освіту</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
-        <option>Диплом МАГІСТРА</option>
-        <option>Диплом СПЕЦІАЛІСТА</option>
-        <option>Диплом БАКАЛАВРА</option>
-        <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
-        <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
-        <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
-        <option>Свідоцтво про визнання іноземного документа про освіту</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
-        <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
-        <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
-      </select>
-      <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
-        <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
-        <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
-        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
-        <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
-        <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
-        <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
-      </select>
-      <label>Рік закінчення закладу освіти</label>
-      <select v-model="year">
-        <option>2021</option>
-        <option>2020</option>
-        <option>2019</option>
-        <option>2018</option>
-        <option>2017</option>
-        <option>2016</option>
-        <option>2015</option>
-        <option>2014</option>
-        <option>2013</option>
-        <option>2012</option>
-        <option>2011</option>
-        <option>2010</option>
-        <option>2009</option>
-      </select>
-      <div class="document-info">
-        <label>Дата видачі документу</label>
-        <input type="date" class="valid name" ref="dateInput" v-model="date" v-on:focusout="handleFocusoutDate" />
-        <div class="error" v-if="checkDate && validateInputDate('Дата народження', date, 'dateInput')">
-          {{validateInputDate('Дата видачі документу', date, 'dateInput').message}}
+    <div v-if="role === 'registrator' && result">
+      <h1>Редагувати дані у Реєстрі документів про освіту</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h2>{{result.lastName}} {{result.firstName}} {{result.fatherName}}</h2>
+        <h3>Дані документа про освіту</h3>
+        <select v-model="educationType" v-on:change="handleSelect">
+          <option>Документи про вищу освіту</option>
+          <option>Документи про професійну (професійно-технічну) освіту</option>
+          <option>Документи про загальну середню освіту</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про вищу освіту'">
+          <option>Диплом МАГІСТРА</option>
+          <option>Диплом СПЕЦІАЛІСТА</option>
+          <option>Диплом БАКАЛАВРА</option>
+          <option>Диплом МОЛОДШОГО БАКАЛАВРА</option>
+          <option>Диплом МОЛОДШОГО СПЕЦІАЛІСТА</option>
+          <option>Диплом ФАХОВОГО МОЛОДШОГО БАКАЛАВРА</option>
+          <option>Свідоцтво про визнання іноземного документа про освіту</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про професійну (професійно-технічну) освіту'">
+          <option>Диплом КВАЛІФІКОВАНОГО РОБІТНИКА</option>
+          <option>Свідоцтво про присвоєння (підвищення) РОБІТНИЧОЇ КВАЛІФІКАЦІЇ</option>
+        </select>
+        <select v-model="documentType" v-if="educationType==='Документи про загальну середню освіту'">
+          <option>СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)</option>
+          <option>АТЕСТАТ про ПОВНУ загальну середню освіту (до 2019)</option>
+          <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (з 2019)</option>
+          <option>СВІДОЦТВО про БАЗОВУ загальну середню освіту (до 2019)</option>
+          <option>СВІДОЦТВО про здобуття БАЗОВОЇ середньої освіти (для осіб з особливими освітніми потребами, зумовленими порушеннями інтелектуального розвитку) (з 2019)</option>
+          <option>Свідоцтво про базову загальну середню освіту за спеціальною програмою (до 2019)</option>
+        </select>
+        <label>Рік закінчення закладу освіти</label>
+        <select v-model="year">
+          <option>2021</option>
+          <option>2020</option>
+          <option>2019</option>
+          <option>2018</option>
+          <option>2017</option>
+          <option>2016</option>
+          <option>2015</option>
+          <option>2014</option>
+          <option>2013</option>
+          <option>2012</option>
+          <option>2011</option>
+          <option>2010</option>
+          <option>2009</option>
+        </select>
+        <div class="document-info">
+          <label>Дата видачі документу</label>
+          <input type="date" class="valid name" ref="dateInput" v-model="date" v-on:focusout="handleFocusoutDate" />
+          <div class="error" v-if="checkDate && validateInputDate('Дата видачі документу', date, 'dateInput')">
+            {{validateInputDate('Дата видачі документу', date, 'dateInput').message}}
+          </div>
+          <label>Повна назва закладу освіти*</label>
+          <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
+          <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
+            {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
+          </div>
+          </div>
+        <div class="ticket-info">
+          <label>Серія*</label>
+          <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
         </div>
-        <label>Повна назва закладу освіти*</label>
-        <input type="text" class="valid name" ref="educationSubjectInput" v-model="educationSubject" v-on:focusout="handleFocusoutEducationSubject" />
-        <div class="error error-name" v-if="checkEducationSubject && validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput')">
-          {{validateInputEducationSybject('Заклад освіти', educationSubject, 'educationSubjectInput').message}}
-        </div>
-        </div>
-      <div class="ticket-info">
-        <label>Серія*</label>
-        <input type="text" class="valid" ref="seriesInput" v-model="series" v-on:focusout="handleFocusoutSeries" />
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-      </div>
-      <div class="error-container">
-        <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
-          {{validateInputSeries('Серія', series, 'seriesInput').message}}
-        </div>
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
+        <div class="error-container">
+          <div class="error" v-if="checkSeries && validateInputSeries('Серія', series, 'seriesInput')">
+            {{validateInputSeries('Серія', series, 'seriesInput').message}}
+          </div>
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div>  
         </div>  
-      </div>  
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Редагувати" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі документів про освіту." />
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Редагувати" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі документів про освіту." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -84,29 +90,36 @@ import Validation from './../../assets/validation.js'
 import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'EducationDocuments',
+  name: 'UpdateEducationDocument',
+  props: ['result'],
+    components: {
+    MessagePopup
+  },
   data() {
     return {
-      educationType: 'Документи про вищу освіту',
-      documentType: 'Диплом МАГІСТРА',
-      year: 2021,
+      educationType: this.result.globalType,
+      documentType: this.result.type,
+      year: this.result.year,
       checkSeries: false,
-      series: 'АА',
+      series: this.result.series,
       isSeriesValid: true,
       checkNumber: false,
-      number: '12345678',
+      number: this.result.number,
       isNumberValid: true,
       checkEducationSubject: false,
-      educationSubject: 'НТУУ КПІ',
+      educationSubject: this.result.institution,
       isEducationSubjectValid: true,
       checkDate: null,
-      date: '2019-06-06',
+      date: this.result.documentDate.split('T')[0],
       isDateValid: true,
-      isPopup: false
+      error: '',
+      isPopup: false,
+      isErrorPopup: false,
+      role: null
     }
   },
-  components: {
-    MessagePopup
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutSeries() {
@@ -148,8 +161,46 @@ export default {
       this.checkEducationSubject = true;
       this.checkDate = true;
       if (this.isSeriesValid && this.isNumberValid && this.isDateValid && this.isEducationSubjectValid) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/diplomas/update`);
+        const body = {
+          diploma_id: this.result.diplomaId,
+          number: this.number,
+          series: this.series,
+          global_type: this.educationType,
+          type: this.documentType,
+          institution_name: this.educationSubject, 
+          date_issue: this.date,
+          year_graduation: this.year
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
+    },
+    updatePopup(isPopup) {
+      this.isPopup = isPopup;
+      this.$router.push({path: '/update-search-education-document'});
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     },
     handleSelect() {
       if (this.educationType === 'Документи про вищу освіту') {
@@ -159,10 +210,6 @@ export default {
       } else if (this.educationType === 'Документи про загальну середню освіту') {
         this.documentType = 'СВІДОЦТВО про здобуття ПОВНОЇ загальної середньої освіти (з 2019)';
       }
-    },
-    updatePopup(isPopup) {
-      this.isPopup = isPopup;
-      this.$router.go(0);
     }
   }
 }

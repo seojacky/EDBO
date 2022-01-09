@@ -19,7 +19,7 @@ const createOnePerson = async({ name, surname, patronymic, p_series, p_number, b
         const authority = await client.query(`SELECT authority_id FROM public.authorities WHERE code = '${authority_code}'`);
         client.end();
         if (!authority.rows[0]) {
-            throw new InvalidRequestError("Такого коду не існує")
+            throw new InvalidRequestError("Помилка. Такого органу, що здійснив видачу, не існує.")
         }
         const client2 = createConnection();
         await client2.query(`INSERT INTO persons (name, surname, patronymic, series, number, issue_date, birthday_date, authorities_fk) VALUES ('${name}', '${surname}', '${patronymic}', '${p_series}', '${p_number}', '${issue_date}', '${birthday_date}', ${authority.rows[0].authority_id})`)
@@ -35,7 +35,7 @@ const updateOnePerson = async({ person_id, name, surname, patronymic, p_series, 
         const authority = await client.query(`SELECT authority_id FROM public.authorities WHERE code = '${authority_code}'`);
         client.end();
         if (!authority.rows[0]) {
-            throw new InvalidRequestError("Такого коду не існує")
+            throw new InvalidRequestError("Помилка. Такого органу, що здійснив видачу, не існує.")
         }
         const client2 = createConnection();
         await client2.query(`UPDATE persons SET name = '${name}', surname = '${surname}', patronymic = '${patronymic}' , series = '${p_series}', number = '${p_number}', birthday_date = '${birthday_date}', authorities_fk = '${authority.rows[0].authority_id}', issue_date = '${issue_date}' where person_id = ${person_id}`)

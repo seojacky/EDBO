@@ -1,140 +1,131 @@
 <template>
   <div class="zno-certificates">
-    <h1>Додати дані до Реєстру сертифікатів зовнішнього незалежного оцінювання</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані сертифіката</h3>
-      <div class='zno-info'>
-        <select v-model="year">
-          <option>2021</option>
-          <option>2020</option>
-          <option>2019</option>
-          <option>2018</option>
-          <option>2017</option>
-          <option>2016</option>
-          <option>2015</option>
-          <option>2014</option>
-          <option>2013</option>
-          <option>2012</option>
-          <option>2011</option>
-          <option>2010</option>
-          <option>2009</option>
-          <option>2008</option>
-        </select>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
-        </div> 
-        <label>Прізвище*</label>
-        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
-        </div>
-        <label>Ім'я*</label>
-        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-        </div>
-        <label>По батькові</label>
-        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handleCheckboxClick" />
-        <label>Підтверджую, по батькові відсутнє</label>
-        <label style="display: inline-block">Дата народження*</label>
-        <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-        <div class="error" v-if="checkDateOfBirth && validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-          {{validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
-        </div>
-      </div>
-      <div class="passport-info">
-        <h3>Дані паспорта</h3>
-        <label>Серія*</label>
-        <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
-        <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
-          {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
-        </div>
-        <input type="checkbox" v-on:click="handlePassportCheckboxClick" />
-        <label>Паспорт старого зразка</label>
-        <br/>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
-        <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
-          {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
-        </div> 
-        <label>Орган, що здійснив видачу*</label>
-        <input type="text" class="valid" ref="passportOrganizationInput" v-model="passportOrganization" v-on:focusout="handleFocusoutPassportOrganization" />    
-        <div class="error" v-if="checkPassportOrganization && validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput')">
-          {{validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput').message}}
-        </div> 
-        <label>Дата видачі*</label>
-        <input type="date" class="valid" ref="passportDateInput" v-model="passportDate" v-on:focusout="handleFocusoutPassportDate" />    
-        <div class="error" v-if="checkPassportDate && validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput')">
-          {{validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput').message}}
-        </div>  
-      </div>
-      <h3>Результати</h3>
-      <div class="results">
-        <div class="subject">
-          <h4>Предмет 1</h4>
-          <select v-model="subject1"  v-on:change="handleSubjectChange1">
-            <option v-for="item in subjects1" v-bind:key="item">{{item}}</option>
+    <div v-if="role === 'registrator'">
+      <h1>Додати дані до Реєстру сертифікатів зовнішнього незалежного оцінювання</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані сертифіката</h3>
+        <div class='zno-info'>
+          <select v-model="year">
+            <option>2021</option>
+            <option>2020</option>
+            <option>2019</option>
+            <option>2018</option>
+            <option>2017</option>
+            <option>2016</option>
+            <option>2015</option>
+            <option>2014</option>
+            <option>2013</option>
+            <option>2012</option>
+            <option>2011</option>
+            <option>2010</option>
+            <option>2009</option>
+            <option>2008</option>
           </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade1">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div> 
+          <label>Прізвище*</label>
+          <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+          <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+            {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+          </div>
+          <label>Ім'я*</label>
+          <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+          <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+            {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+          </div>
+          <label>По батькові</label>
+          <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+          <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+            {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+          </div>
+          <input type="checkbox" v-on:click="handleCheckboxClick" />
+          <label>Підтверджую, по батькові відсутнє</label>
         </div>
-        <div class="subject">
-          <h4>Предмет 2</h4>
-          <select v-model="subject2"  v-on:change="handleSubjectChange2">
-            <option v-for="item in subjects2" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade2">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
+        <div class="passport-info">
+          <h3>Дані паспорта</h3>
+          <label>Серія*</label>
+          <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
+          <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
+            {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
+          </div>
+          <input type="checkbox" v-on:click="handlePassportCheckboxClick" />
+          <label>Паспорт старого зразка</label>
+          <br/>
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
+          <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
+            {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
+          </div>
         </div>
-        <div class="subject">
-          <h4>Предмет 3</h4>
-          <select v-model="subject3" v-on:change="handleSubjectChange3">
-            <option v-for="item in subjects3" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade3">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
+        <h3>Результати</h3>
+        <div class="results">
+          <div class="subject">
+            <h4>Предмет 1</h4>
+            <select v-model="subject1"  v-on:change="handleSubjectChange1">
+              <option v-for="item in subjects1" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade1">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 2</h4>
+            <select v-model="subject2"  v-on:change="handleSubjectChange2">
+              <option v-for="item in subjects2" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade2">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 3</h4>
+            <select v-model="subject3" v-on:change="handleSubjectChange3">
+              <option v-for="item in subjects3" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade3">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 4</h4>
+            <select v-model="subject4" v-on:change="handleSubjectChange4">
+              <option v-for="item in subjects4" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade4">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 5</h4>
+            <select v-model="subject5" v-on:change="handleSubjectChange5">
+              <option v-for="item in subjects5" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade5">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <br/>
+          <div class="error" v-if="results === 0">
+            Потрібно додати не менше одного предмета
+          </div>
         </div>
-        <div class="subject">
-          <h4>Предмет 4</h4>
-          <select v-model="subject4" v-on:change="handleSubjectChange4">
-            <option v-for="item in subjects4" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade4">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <div class="subject">
-          <h4>Предмет 5</h4>
-          <select v-model="subject5" v-on:change="handleSubjectChange5">
-            <option v-for="item in subjects5" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade5">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <br/>
-        <div class="error" v-if="results === 0">
-          Потрібно додати не менше одного предмета
-        </div>
-      </div>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Додати до реєстру" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру сертифікатів Зовнішнього незалежного оцінювання." />
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Додати до реєстру" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було додано до Реєстру сертифікатів Зовнішнього незалежного оцінювання." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -143,7 +134,7 @@ import Validation from './../../assets/validation.js'
 import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'TeacherCertificates',
+  name: 'AddZnoCertificate',
   data() {
     return {
       year: 2021,
@@ -160,21 +151,15 @@ export default {
       number: null,
       isNumberValid: false,
       isPassportNumberValid: null,
-      isPassportOrganizationValid: null,
-      isPassportDateValid: null,
       isPassportSeriesValid: null,
       checkPassportNumber: false,
-      checkPassportOrganization: false,
-      checkPassportDate: false,
       checkPassportSeries: false,
       passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
       passportSeries: null,
-      checkDateOfBirth: false,
-      isDateOfBirthValid: false,
-      dateOfBirth: null,
+      error: '',
       isPopup: false,
+      isErrorPopup: false,
+      role: null,
       results: 0,
       subject11: 'Не вибрано',
       subject21: 'Не вибрано',
@@ -195,41 +180,77 @@ export default {
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects2: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects3: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects4: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects5: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       grades: [ 'Не склав' ]
     }
   },
   mounted() {
+    this.role = localStorage.getItem('role');
     for(let i = 100; i <= 200; i++) {
       this.grades.push(i.toString())
     }
@@ -255,15 +276,6 @@ export default {
     },
     handleFocusoutPassportNumber() {
       this.checkPassportNumber = true;
-    },
-    handleFocusoutPassportOrganization() {
-      this.checkPassportOrganization = true;
-    },
-    handleFocusoutPassportDate() {
-      this.checkPassportDate = true;
-    },
-    handleFocusoutDateOfBirth() {
-      this.checkDateOfBirth = true;
     },
     handlePassportCheckboxClick() {
       if (this.$refs.passportSeriesInput.disabled) {
@@ -471,21 +483,6 @@ export default {
       this.isPassportNumberValid = message ? false : true;
       return message;
     },
-    validateInputPassportOrganization(field, number, elementName) {
-      const message = Validation.validatePassportOrganization(field, number, this.$refs[elementName]);
-      this.isPassportOrganizationValid = message ? false : true;
-      return message;
-    },
-    validateInputPassportDate(field, number, elementName) {
-      const message = Validation.validateDate(field, number, this.$refs[elementName]);
-      this.isPassportDateValid = message ? false : true;
-      return message;
-    },
-    validateInputDate(field, date, elementName) {
-      const message = Validation.validateDate(field, date, this.$refs[elementName]);
-      this.isDateOfBirthValid = message ? false : true;
-      return message;
-    },
     validateInputName(field, name, elementName) {
       const message = Validation.validateName(field, name, this.$refs[elementName]);
       if (field === 'Прізвище') {
@@ -507,10 +504,7 @@ export default {
       this.checkNumber = true;
       this.checkLastName = true;
       this.checkFirstName = true;
-      this.checkDateOfBirth = true;
       this.checkPassportNumber = true;
-      this.checkPassportOrganization = true;
-      this.checkPassportDate = true;
       if (!this.$refs.passportSeriesInput.disabled) {
         this.checkPassportSeries = true;
       } else {
@@ -523,14 +517,68 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid && this.results > 0
-      && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
-      && this.isPassportSeriesValid && this.isDateOfBirthValid) {
-        this.isPopup = true;
+      && this.isPassportNumberValid && this.isPassportSeriesValid) {
+        const url = new URL(`${window.location.origin}/api/zno/create`);
+        const body = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName,
+          p_number: this.passportNumber,
+          p_series: this.passportSeries ? this.passportSeries : '',
+          number: this.number,
+          year: this.year,
+          subj_result: [
+            {
+              subject: this.subject1,
+              result: this.grade1
+            },
+            {
+              subject: this.subject2,
+              result: this.grade2
+            },
+            {
+              subject: this.subject3,
+              result: this.grade3
+            },
+            {
+              subject: this.subject4,
+              result: this.grade4
+            },
+            {
+              subject: this.subject5,
+              result: this.grade5
+            }
+          ]
+        };
+        console.log(body)
+        fetch(url, {method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.go(0);
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }
