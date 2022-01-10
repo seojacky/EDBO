@@ -1,4 +1,5 @@
 const { getOneCertificate, createOneCertificate, updateOneCertificate } = require('../services/certificatesService')
+const { createLog } = require('../services/logsService')
 
 const getCertificate = async(req, res) => {
     const { year, number, name, surname, patronymic } = req.query;
@@ -20,7 +21,8 @@ const getCertificate = async(req, res) => {
 const createCertificate = async(req, res) => {
     const { year_graduation, number, position, comission_number, name, surname, patronymic, start_date, end_date, p_series, p_number } = req.body;
     try {
-        await createOneCertificate({ year_graduation, number, position, comission_number, name, surname, patronymic, start_date, end_date, p_series, p_number })
+        const result_row = await createOneCertificate({ year_graduation, number, position, comission_number, name, surname, patronymic, start_date, end_date, p_series, p_number })
+        await createLog(req.user.user_id, 'Додавання', result_row, 'Сертифікати педагогічних правцівників')
         res.status(200).json({ message: "Certificate created successfully" })
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -31,6 +33,7 @@ const updateCertificate = async(req, res) => {
     const { certificate_id, year_graduation, number, position, comission_number, start_date, end_date } = req.body;
     try {
         await updateOneCertificate({ certificate_id, year_graduation, number, position, comission_number, start_date, end_date })
+        await createLog(req.user.user_id, 'Редагування', certificate_id, 'Сертифікати педагогічних правцівників')
         res.status(200).json({ message: "Certificate updated successfully" })
     } catch (error) {
         res.status(400).json({ error: error.message })

@@ -19,7 +19,7 @@ const getToken = async(username, password) => {
                 throw new LoginError('Деактивований акаунт');
             }
             const token = jwt.sign({
-                user_id: registrar.registrar_id,
+                user_id: registrar.rows[0].registrar_id,
                 username: username,
                 role: "registrator"
             }, process.env.secret || 'secret');
@@ -37,7 +37,7 @@ const getToken = async(username, password) => {
                 throw new LoginError('Invalid username or password');
             }
             const token = jwt.sign({
-                user_id: registrar2.registrar_id,
+                user_id: registrar2.rows[0].registrar_id,
                 username: username,
                 role: "administrator"
             }, process.env.secret || 'secret');

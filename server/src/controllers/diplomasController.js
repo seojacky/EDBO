@@ -1,4 +1,5 @@
 const { getOneDiploma, createOneDiploma, updateOneDiploma } = require('../services/diplomasService')
+const { createLog } = require('../services/logsService')
 
 const getDiploma = async(req, res) => {
     const { series, number, name, surname, patronymic, type, global_type, birthday_date } = req.query;
@@ -18,7 +19,8 @@ const getDiploma = async(req, res) => {
 const createDiploma = async(req, res) => {
     const { type, global_type, series, number, year_graduation, date_issue, institution_name, name, surname, patronymic, p_series, p_number } = req.body;
     try{
-        await createOneDiploma({ type, global_type, series, number, year_graduation, date_issue, institution_name, name, surname, patronymic, p_series, p_number })
+        const result_row = await createOneDiploma({ type, global_type, series, number, year_graduation, date_issue, institution_name, name, surname, patronymic, p_series, p_number })
+        await createLog(req.user.user_id, 'Додавання', result_row, 'Документи про освіту')
         res.status(200).json({ message: "Diploma created successfully" })
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -29,6 +31,7 @@ const updateDiploma = async(req, res) => {
     const { diploma_id, type, global_type, series, number, year_graduation, date_issue, institution_name } = req.body;
     try {
         await updateOneDiploma({ diploma_id, type, global_type, series, number, year_graduation, date_issue, institution_name })
+        await createLog(req.user.user_id, 'Редагування', diploma_id, 'Документи про освіту')
         res.status(200).json({ message: "Diploma updated successfully" })
     } catch (error) {
         res.status(400).json({ error: error.message })

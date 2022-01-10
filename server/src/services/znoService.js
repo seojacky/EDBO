@@ -1,6 +1,7 @@
 const createConnection = require('../db');
 const { SqlError, InvalidRequestError } = require('../utils/errors');
 const { getOnePerson } = require('./personsService')
+const { createLog } = require('./logsService')
 
 const getOneYearZno = async(year, number, name, surname, patronymic) => {
     try {
@@ -15,26 +16,32 @@ const getOneYearZno = async(year, number, name, surname, patronymic) => {
     }
 }
 
-const createOneYearZno = async(year, number, name, surname, patronymic, p_series, p_number, subj_result) => {
+const createOneYearZno = async(year, number, name, surname, patronymic, p_series, p_number, subj_result, registrator_id) => {
     try {
         console.log(subj_result)
         let person_id = await getOnePerson({ name, surname, patronymic, p_series, p_number})
         if (!person_id) {
            throw new InvalidRequestError("Помилка. Дані про задану особу відсутні.")
         }
-        let oldZno_id = await getOneYearZno (year, number, name, surname, patronymic);
-        if(!oldZno_id)
-        {
-            throw new InvalidRequestError("Ця людина уже має сертифікат у цьому році")
+        const client1 = createConnection();
+        const result1 = await client1.query(`SELECT * FROM zno WHERE number = '${number}'`)
+        if (result1.rows[0] != undefined) {
+            throw new InvalidRequestError("Документ з таким номером уже існує")
         }
+        const result2 = await client1.query(`SELECT * FROM zno WHERE year = '${year}' AND person_fk = '${person_id.person_id}'`)
+        if (result2.rows[0] != undefined) {
+            throw new InvalidRequestError("Сертифікат ЗНО у цьому році вже існує")
+        }
+        client1.end();
         subj_result.forEach(async item => {
             if(item.subject != 'Не вибрано')
             {
                 const client = createConnection();
                 const subj_id = await client.query(`SELECT subject_id FROM subjects WHERE subject = '${item.subject}';`);
                 console.log(subj_id)
-                await client.query(`INSERT into zno (number, person_fk, subject_fk, result, year) VALUES ('${number}', ${person_id.person_id}, '${subj_id.rows[0].subject_id}', '${item.result}',  '${year}');`)
+                const result = await client.query(`INSERT into zno (number, person_fk, subject_fk, result, year) VALUES ('${number}', ${person_id.person_id}, '${subj_id.rows[0].subject_id}', '${item.result}',  '${year}') returning zno_id`)
                 client.end();
+                await createLog(registrator_id, 'Додавання', result.rows[0].zno_id, 'Сертифікати ЗНО')
             }
         });
     } catch (err) {
@@ -42,8 +49,26 @@ const createOneYearZno = async(year, number, name, surname, patronymic, p_series
     }
 }
 
-const updateOneYearZno = async(old_number, number, old_year, year, results) => {
+const updateOneYearZno = async(old_number, number, old_year, year, results, registrator_id) => {
     try {
+        // const client1 = createConnection();
+        // const result1 = await client1.query(`SELECT * FROM zno WHERE number = '${number}'`)
+        // const old_result = await client1.query(`SELECT * FROM zno WHERE number = '${old_number}' AND year = '${old_year}'`)
+        // if (result1.rows[0] != undefined) {
+        //     result1.rows.forEach(itm => {
+        //         if ((itm.number === number && itm.person_fk !== old_result.rows[0].person_fk)
+        //         || (itm.number === number && itm.person_fk === old_result.rows[0].person_fk && itm.year !== year)) {
+        //             throw new InvalidRequestError("Документ з таким номером уже існує")
+        //         }
+        //     })
+        // }
+        // const result2 = await client1.query(`SELECT * FROM zno WHERE year = '${year}' AND person_fk = ${old_result.rows[0].person_fk}`)
+        // if (result2.rows[0] != undefined) {
+        //     if (year !== old_year) {
+        //         throw new InvalidRequestError("Сертифікат ЗНО у цьому році вже існує")
+        //     }
+        // }
+        // client1.end();
         const client = createConnection();
         let person =  await client.query(`SELECT person_fk FROM zno WHERE year = '${old_year}' AND number = '${old_number}';`);
         let person_id = person.rows[0].person_fk;
@@ -54,8 +79,9 @@ const updateOneYearZno = async(old_number, number, old_year, year, results) => {
             {
                 const client1 = createConnection();
                 const subj_id = await client1.query(`SELECT subject_id FROM subjects WHERE subject = '${item.subject}';`);
-                await client1.query(`INSERT into zno (number, person_fk, subject_fk, result, year) VALUES ('${number}', ${person_id}, '${subj_id.rows[0].subject_id}', '${item.result}',  '${year}');`)
+                const result = await client1.query(`INSERT into zno (number, person_fk, subject_fk, result, year) VALUES ('${number}', ${person_id}, '${subj_id.rows[0].subject_id}', '${item.result}',  '${year}') returning zno_id`)
                 client1.end();
+                await createLog(registrator_id, 'Редагування', result.rows[0].zno_id, 'Сертифікати ЗНО')
             }
         });
     } catch (err) {

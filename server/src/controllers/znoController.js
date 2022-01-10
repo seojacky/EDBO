@@ -20,7 +20,7 @@ const getZno = async(req, res) => {
 const createZno = async(req, res) => {
     const {year, number, name, surname, patronymic, p_series, p_number, subj_result} = req.body;
     try {
-        await createOneYearZno(year, number, name, surname, patronymic, p_series, p_number, subj_result)
+        await createOneYearZno(year, number, name, surname, patronymic, p_series, p_number, subj_result, req.user.user_id)
         res.status(200).json({ message: "ZNO certificates created successfully" })
     } catch (error) {
         res.status(400).json({ error: error.message })
@@ -30,7 +30,7 @@ const createZno = async(req, res) => {
 const updateZno = async (req, res) => {
     const { old_number, number, old_year, year, results } = req.body;
     try {
-        await updateOneYearZno(old_number, number, old_year, year, results);
+        await updateOneYearZno(old_number, number, old_year, year, results, req.user.user_id);
         res.status(200).json({'message': 'successful'});
     } catch (error) {
         res.status(400).json({ error: error.message })
