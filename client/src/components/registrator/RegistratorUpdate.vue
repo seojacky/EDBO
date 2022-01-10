@@ -1,93 +1,107 @@
 <template>
   <div class="registration-request">
-  <h1>Редагувати дані реєстратора</h1>
-    <form method="POST" v-on:submit="handleSubmitForm">
-      <div class="left-column">
-        <div class="person-info">
-          <h3>Дані особи</h3>
-          <label>Прізвище*</label>
-          <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-          <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-            {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
-          </div>
-          <label>Ім'я*</label>
-          <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-          <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-            {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-          </div>
-          <label>По батькові</label>
-          <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-          <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-            {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-          </div>
-          <input type="checkbox" ref="fatherNameCheckbox" v-on:click="handleCheckboxClick" />
-          <label>Підтверджую, по батькові відсутнє</label>
-          <label style="display: inline-block">Дата народження*</label>
-          <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
-          <div class="error" v-if="checkDateOfBirth && validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput')">
-            {{validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
-          </div>
-          <label>Місце роботи*</label>
-          <select v-model="organization">
-            <option>Місце роботи 1</option>
-            <option>Місце роботи 2</option>
-          </select>
-          <label>Посада*</label>
-          <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />
-          <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
-            {{validateInputPosition('Посада', position, 'positionInput').message}}
-          </div>
-           <label>Електронна пошта**</label>
-          <input type="text" class="valid" ref="emailInput" v-model="email" v-on:focusout="handleFocusoutEmail" />
-          <div class="error" v-if="checkEmail && validateInputEmail('Пошта', email, 'emailInput')">
-            {{validateInputEmail('Пошта', email, 'emailInput').message}}
-          </div>
-        </div>
-      </div>
-      <div class="right-column">
-        <div class="passport-info">
-          <h3>Дані паспорта</h3>
-            <label>Серія*</label>
-            <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
-            <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
-              {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
+    <div v-if="role === 'administrator' && registrator">
+      <h1>Редагувати дані реєстратора</h1>
+      <form method="POST" v-on:submit="handleSubmitForm">
+        <div class="left-column">
+          <div class="person-info">
+            <h3>Дані особи</h3>
+            <label>Прізвище*</label>
+            <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+            <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+              {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
             </div>
-            <input type="checkbox" ref="passportCheckbox" v-on:click="handlePassportCheckboxClick" />
-            <label>Паспорт старого зразка</label>
-            <br/>
-            <label>Номер*</label>
-            <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
-            <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
-              {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
-            </div> 
-            <label>Орган, що здійснив видачу*</label>
-            <input type="text" class="valid" ref="passportOrganizationInput" v-model="passportOrganization" v-on:focusout="handleFocusoutPassportOrganization" />    
-            <div class="error" v-if="checkPassportOrganization && validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput')">
-              {{validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput').message}}
-            </div> 
-            <label>Дата видачі*</label>
-            <input type="date" class="valid" ref="passportDateInput" v-model="passportDate" v-on:focusout="handleFocusoutPassportDate" />    
-            <div class="error" v-if="checkPassportDate && validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput')">
-              {{validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput').message}}
-            </div>  
+            <label>Ім'я*</label>
+            <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+            <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+              {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+            </div>
+            <label>По батькові</label>
+            <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+            <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+              {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+            </div>
+            <input type="checkbox" ref="fatherNameCheckbox" v-on:click="handleCheckboxClick" />
+            <label>Підтверджую, по батькові відсутнє</label>
+            <label style="display: inline-block">Дата народження*</label>
+            <input type="date" class="valid" ref="dateOfBirthInput" v-model="dateOfBirth" v-on:focusout="handleFocusoutDateOfBirth" />
+            <div class="error" v-if="checkDateOfBirth && validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput')">
+              {{validateInputDate('Дата народження', dateOfBirth, 'dateOfBirthInput').message}}
+            </div>
+            <label>Місце роботи*</label>
+            <select v-model="organization">
+              <option>Київський університет імені Бориса Грінченка</option>
+              <option>Київський університет права Національної академії наук Україн</option>
+              <option>Київський університет туризму, економіки і права</option>
+              <option>Коледж Вищого навчального закладу "Київський університет ринкових відносин"</option>
+              <option>Міжнародний науково-навчальний центр інформаційних технологій та систем НАН України та МОН України</option>
+              <option>Національний авіаційний університет</option>
+              <option>Національний медичний університет імені О.О. Богомольця</option>
+              <option>Національний інститут стратегічних досліджень</option>
+              <option>Національний технічний університет України «Київський політехнічний інститут імені Ігоря Сікорського»</option>
+              <option>Національний університет біоресурсів і природокористування України</option>
+            </select>
+            <label>Посада*</label>
+            <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />
+            <div class="error" v-if="checkPosition && validateInputPosition('Посада', position, 'positionInput')">
+              {{validateInputPosition('Посада', position, 'positionInput').message}}
+            </div>
+             <label>Електронна пошта**</label>
+            <input type="text" class="valid" ref="emailInput" v-model="email" v-on:focusout="handleFocusoutEmail" />
+            <div class="error" v-if="checkEmail && validateInputEmail('Пошта', email, 'emailInput')">
+              {{validateInputEmail('Пошта', email, 'emailInput').message}}
+            </div>
+          </div>
         </div>
-        <div class="tax-info">
-          <h3>Дані облікової картки платника податків</h3>
-          <label>Реєстраційний номер*</label>
-          <input type="text" class="valid" ref="taxNumberInput" v-model="taxNumber" v-on:focusout="handleFocusoutTaxNumber" />
-          <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
-            {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
-          </div> 
-          <input type="checkbox" ref="taxNumberCheckbox" v-on:click="handleTaxCheckboxClick" />
-          <label>Підтверджую, реєстраційний номер відсутній</label>
-          <h5>* обов'язкові поля</h5>
-          <h5>** на пошту будуть надіслані логін і пароль після підтвердження<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Вашого запиту, або повідомлення про відхилення Вашого запиту</h5>
+        <div class="right-column">
+          <div class="passport-info">
+            <h3>Дані паспорта</h3>
+              <label>Серія*</label>
+              <input type="text" class="valid" disabled ref="passportSeriesInput" v-model="passportSeries" v-on:focusout="handleFocusoutPassportSeries" />
+              <div class="error" v-if="checkPassportSeries && validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput')">
+                {{validateInputPassportSeries('Серія', passportSeries, 'passportSeriesInput').message}}
+              </div>
+              <input type="checkbox" ref="passportCheckbox" v-on:click="handlePassportCheckboxClick" />
+              <label>Паспорт старого зразка</label>
+              <br/>
+              <label>Номер*</label>
+              <input type="text" class="valid" ref="passportNumberInput" v-model="passportNumber" v-on:focusout="handleFocusoutPassportNumber" />    
+              <div class="error" v-if="checkPassportNumber && validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput')">
+                {{validateInputPassportNumber('Номер', passportNumber, 'passportNumberInput').message}}
+              </div> 
+              <label>Орган, що здійснив видачу*</label>
+              <input type="text" class="valid" ref="passportOrganizationInput" v-model="passportOrganization" v-on:focusout="handleFocusoutPassportOrganization" />    
+              <div class="error" v-if="checkPassportOrganization && validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput')">
+                {{validateInputPassportOrganization('Орган, що здійснив видачу', passportOrganization, 'passportOrganizationInput').message}}
+              </div> 
+              <label>Дата видачі*</label>
+              <input type="date" class="valid" ref="passportDateInput" v-model="passportDate" v-on:focusout="handleFocusoutPassportDate" />    
+              <div class="error" v-if="checkPassportDate && validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput')">
+                {{validateInputPassportDate('Дата видачі', passportDate, 'passportDateInput').message}}
+              </div>  
+          </div>
+          <div class="tax-info">
+            <h3>Дані облікової картки платника податків</h3>
+            <label>Реєстраційний номер*</label>
+            <input type="text" class="valid" ref="taxNumberInput" v-model="taxNumber" v-on:focusout="handleFocusoutTaxNumber" />
+            <div class="error" v-if="checkTaxNumber && validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput')">
+              {{validateInputTaxNumber('Реєстраційний номер', taxNumber, 'taxNumberInput').message}}
+            </div> 
+            <input type="checkbox" ref="taxNumberCheckbox" v-on:click="handleTaxCheckboxClick" />
+            <label>Підтверджую, реєстраційний номер відсутній</label>
+            <h5>* обов'язкові поля</h5>
+            <h5>** на пошту будуть надіслані логін і пароль після підтвердження<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Вашого запиту, або повідомлення про відхилення Вашого запиту</h5>
+          </div>
         </div>
+        <input type="submit" value="Редагувати" />
+        <input type="button" value="Скасувати" v-on:click="handleCancelClick" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані реєсратора було оновлено." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
       </div>
-      <input type="submit" value="Редагувати" />
-      <input type="button" value="Скасувати" v-on:click="handleCancelClick" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані реєсратора було оновлено." />
+      <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
@@ -96,24 +110,24 @@ import Validation from './../../assets/validation.js'
 import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'RegistrationRequest',
+  name: 'RegistratorUpdate',
   components: {
     MessagePopup
   },
   props: ['registrator'],
   data() {
     return {
-      lastName: null,
-      firstName: null,
-      fatherName: null,
-      dateOfBirth: null,
-      position: null,
-      email: null,
-      taxNumber: null,
-      passportNumber: null,
-      passportOrganization: null,
-      passportDate: null,
-      passportSeries: null,
+      lastName: this.registrator.surname,
+      firstName: this.registrator.name,
+      fatherName: this.registrator.patronymic,
+      dateOfBirth: this.registrator.birthday_date.split('T')[0],
+      position: this.registrator.position,
+      email: this.registrator.email,
+      taxNumber: this.registrator.identification_code,
+      passportNumber: this.registrator.number,
+      passportOrganization: this.registrator.authority_code,
+      passportDate: this.registrator.issue_date.split('T')[0],
+      passportSeries: this.registrator.series,
       checkLastName: false,
       checkFirstName: false,
       checkFatherName: false,
@@ -137,35 +151,30 @@ export default {
       isPassportDateValid: null,
       isPassportSeriesValid: null,
       isPopup: false,
-      organization: 'Місце роботи 1',
+      error: '',
+      isErrorPopup: false,
+      role: null,
+      organization: this.registrator.organization_name,
     }
   },
   mounted() {
     console.log(this.registrator)
-    this.lastName = this.registrator.lastName;
-    this.firstName = this.registrator.firstName;
-    this.fatherName = this.registrator.fatherName;
-    this.dateOfBirth = this.registrator.dateOfBirth;
-    this.organization = this.registrator.organization;
-    this.position = this.registrator.position;
-    this.email = this.registrator.email;
-    this.passportNumber = this.registrator.passportNumber;
-    this.passportSeries = this.registrator.passportSeries;
-    this.passportOrganization = this.registrator.passportOrganization;
-    this.passportDate = this.registrator.passportDate;
-    this.taxNumber = this.registrator.taxNumber;
-    if (this.passportSeries) {
-      this.$refs.passportCheckbox.checked = true;
-      this.$refs.passportSeriesInput.disabled = false;
-    }
-    if (this.taxNumber) {
-      this.$refs.taxNumberCheckbox.checked = true;
-      this.$refs.taxNumberInput.disabled = false;
-    }
-    if (this.fatherName) {
-      this.$refs.fatherNameCheckbox.checked = true;
-      this.$refs.fatherNameInput.disabled = false;
-    }
+    this.role = localStorage.getItem('role');
+    this.$nextTick(()=>{
+      this.organization = this.registrator.organization_name;
+      if (this.passportSeries) {
+        this.$refs.passportCheckbox.checked = true;
+        this.$refs.passportSeriesInput.disabled = false;
+      }
+      if (!this.taxNumber) {
+        this.$refs.taxNumberCheckbox.checked = true;
+        this.$refs.taxNumberInput.disabled = false;
+      }
+      if (!this.fatherName) {
+        this.$refs.fatherNameCheckbox.checked = true;
+        this.$refs.fatherNameInput.disabled = false;
+      }
+    });
   },
   methods: {
     handleFocusoutLastName() {
@@ -312,7 +321,44 @@ export default {
         && this.isDateOfBirthValid && this.isPositionValid && this.isEmailValid
         && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
         && this.isPassportSeriesValid && this.isTaxNumberValid ) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/registrators/update`);
+        const body = {
+          registrar_id: this.registrator.registrar_id,
+          person_id: this.registrator.person_id,
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          birthday_date: this.dateOfBirth, 
+          issue_date: this.passportDate, 
+          p_series: this.passportSeries ? this.passportSeries : '', 
+          p_number: this.passportNumber,
+          authority_code: this.passportOrganization,
+          email: this.email, 
+          identification_code: this.taxNumber ? this.taxNumber : '', 
+          position: this.position, 
+          organization_name: this.organization,
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     handleCancelClick() {
@@ -321,6 +367,9 @@ export default {
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.push('/administartor');
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

@@ -142,6 +142,7 @@ export default {
       isPassportDateValid: null,
       isPassportSeriesValid: null,
       isPopup: false,
+      error: '',
       isErrorPopup: false,
       role: null,
       organization: 'Київський університет імені Бориса Грінченка',
@@ -309,7 +310,7 @@ export default {
           p_number: this.passportNumber,
           authority_code: this.passportOrganization,
           email: this.email, 
-          identification_code: this.taxNumber, 
+          identification_code: this.taxNumber ? this.taxNumber : '', 
           position: this.position, 
           organization_name: this.organization,
         };

@@ -51,6 +51,7 @@ const createOnePersonWithAuthorityFk = async({ name, surname, patronymic, p_seri
 const updateOnePerson = async({ person_id, name, surname, patronymic, p_series, p_number, birthday_date, issue_date, authority_code }) => {
     try {
         const client = createConnection();
+
         const authority = await client.query(`SELECT authority_id FROM public.authorities WHERE code = '${authority_code}'`);
         client.end();
         if (!authority.rows[0]) {

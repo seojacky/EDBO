@@ -63,7 +63,6 @@ const updateOneRegistrator = async({registrar_id, person_id, name, surname, patr
        if(!organization){
            throw new InvalidRequestError("Немає такої організації")
        }
-       
        var organization_id = organization.organization_id;
        await updateOnePerson ({ person_id, name, surname, patronymic, p_series, p_number, birthday_date, issue_date, authority_code });
        
