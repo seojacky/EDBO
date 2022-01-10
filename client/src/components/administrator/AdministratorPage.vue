@@ -178,16 +178,65 @@ export default {
         console.log(this.error)
       });
     },
+    approveRequest(query_id) {
+      const url = new URL(`${window.location.origin}/api/registrators/approve?query_id=${query_id}`);
+      fetch(url, {method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+        }})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+         console.log(data)
+       })
+      .then(() => {
+        this.getRequests();
+        this.getRegistrators();
+      })
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
+    },
+    rejectRequest(query_id) {
+      const url = new URL(`${window.location.origin}/api/registrators/reject?query_id=${query_id}`);
+      fetch(url, {method: 'POST', 
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+        }})
+       .then(response => {
+         if (response.status === 200) {
+           return response.json();
+         } else {
+           throw new Error('За вашим запитом нічого не знайдено.');
+         }
+       })
+       .then(data => {
+         console.log(data)
+       })
+      .then(() => {
+        this.getRequests();
+        this.getRegistrators();
+      })
+      .catch((error) => {
+        this.error = error.message;
+        console.log(this.error)
+      });
+    },
     handleBtnAcceptClick(item) {
       console.log('accept');
-      const index = this.requests.indexOf(item);
-      this.requests.splice(index, 1);
-      this.registrators.push(item);
+      this.approveRequest(item.query_id);
     },
     handleBtnRejectClick(item) {
       console.log('reject');
-      const index = this.requests.indexOf(item);
-      this.requests.splice(index, 1);
+      this.rejectRequest(item.query_id);
     },
     handleBtnUpdateClick(item) {
       console.log('update');
