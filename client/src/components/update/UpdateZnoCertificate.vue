@@ -2,7 +2,7 @@
   <div class="zno-certificates">
     <h1>Додати дані до Реєстру сертифікатів зовнішнього незалежного оцінювання</h1> 
     <form method="GET" v-on:submit="handleSubmitForm">
-      <h2>ПІБ</h2>
+      <h2>{{this.result.lastName}} {{this.result.firstName}} {{this.result.fatherName}}</h2>
       <h3>Дані сертифіката</h3>
       <div class='zno-info'>
         <select v-model="year">
@@ -88,6 +88,7 @@
       <input type="submit" value="Редагувати" />
     </form>
     <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів Зовнішнього незалежного оцінювання." />
+    <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
   </div>
 </template>
 
@@ -96,73 +97,169 @@ import Validation from './../../assets/validation.js'
 import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'TeacherCertificates',
+  name: 'UpdateZnoCertificate',
+  props: ['result'],
   data() {
     return {
-      year: 2021,
+      year: this.result.year,
       checkNumber: false,
-      number: '12345678',
+      number: this.result.number,
       isNumberValid: true,
+      error: '',
       isPopup: false,
-      results: 1,
-      subject11: 'Географія',
-      subject21: 'Не вибрано',
-      subject31: 'Не вибрано',
-      subject41: 'Не вибрано',
-      subject51: 'Не вибрано',
-      subject1: 'Географія',
-      subject2: 'Не вибрано',
-      subject3: 'Не вибрано',
-      subject4: 'Не вибрано',
-      subject5: 'Не вибрано',
-      grade1: '185',
-      grade2: 'Не склав',
-      grade3: 'Не склав',
-      grade4: 'Не склав',
-      grade5: 'Не склав',
+      isErrorPopup: false,
+      role: null,
+      results: 0,
+      subject11: this.result.result[0] ? this.result.result[0].subject : 'Не вибрано',
+      subject21: this.result.result[1] ? this.result.result[1].subject : 'Не вибрано',
+      subject31: this.result.result[2] ? this.result.result[2].subject : 'Не вибрано',
+      subject41: this.result.result[3] ? this.result.result[3].subject : 'Не вибрано',
+      subject51: this.result.result[4] ? this.result.result[4].subject : 'Не вибрано',
+      subject1: this.result.result[0] ? this.result.result[0].subject : 'Не вибрано',
+      subject2: this.result.result[1] ? this.result.result[1].subject : 'Не вибрано',
+      subject3: this.result.result[2] ? this.result.result[2].subject : 'Не вибрано',
+      subject4: this.result.result[3] ? this.result.result[3].subject : 'Не вибрано',
+      subject5: this.result.result[4] ? this.result.result[4].subject : 'Не вибрано',
+      grade1: this.result.result[0] ? this.result.result[0].result : 'Не склав',
+      grade2: this.result.result[1] ? this.result.result[1].result : 'Не склав',
+      grade3: this.result.result[2] ? this.result.result[2].result : 'Не склав',
+      grade4: this.result.result[3] ? this.result.result[3].result : 'Не склав',
+      grade5: this.result.result[4] ? this.result.result[4].result : 'Не склав',
       subjects1: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
-        'Географія'
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects2: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects3: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects4: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       subjects5: [
         'Не вибрано',
         'Українська мова',
         'Математика',
+        'Історія України',
         'Англійська мова',
+        'Німецька мова',
+        'Французька мова',
+        'Іспанська мова',
         'Фізика',
+        'Географія',
+        'Біологія',
+        'Хімія'
       ],
       grades: [ 'Не склав' ]
     }
   },
   mounted() {
+    this.role = localStorage.getItem('role');
     for(let i = 100; i <= 200; i++) {
       this.grades.push(i.toString())
     }
+    this.$nextTick(()=>{
+      if (this.result.result[0]) {
+        const index2 = this.subjects2.indexOf(this.subject1);
+        this.subjects2.splice(index2, 1);
+        const index3 = this.subjects3.indexOf(this.subject1);
+        this.subjects3.splice(index3, 1);
+        const index4 = this.subjects4.indexOf(this.subject1);
+        this.subjects4.splice(index4, 1);
+        const index5 = this.subjects5.indexOf(this.subject1);
+        this.subjects5.splice(index5, 1);
+        this.results += 1;
+      }
+      if (this.result.result[1]) {
+        const index1 = this.subjects1.indexOf(this.subject2);
+        this.subjects1.splice(index1, 1);
+        const index3 = this.subjects3.indexOf(this.subject2);
+        this.subjects3.splice(index3, 1);
+        const index4 = this.subjects4.indexOf(this.subject2);
+        this.subjects4.splice(index4, 1);
+        const index5 = this.subjects5.indexOf(this.subject2);
+        this.subjects5.splice(index5, 1);
+        this.results += 1;
+      }
+      if (this.result.result[2]) {
+         const index1 = this.subjects1.indexOf(this.subject3);
+        this.subjects1.splice(index1, 1);
+        const index2 = this.subjects2.indexOf(this.subject3);
+        this.subjects2.splice(index2, 1);
+        const index4 = this.subjects4.indexOf(this.subject3);
+        this.subjects4.splice(index4, 1);
+        const index5 = this.subjects5.indexOf(this.subject3);
+        this.subjects5.splice(index5, 1);
+        this.results += 1;
+      }
+      if (this.result.result[3]) {
+        const index1 = this.subjects1.indexOf(this.subject4);
+        this.subjects1.splice(index1, 1);
+        const index2 = this.subjects2.indexOf(this.subject4);
+        this.subjects2.splice(index2, 1);
+        const index3 = this.subjects3.indexOf(this.subject4);
+        this.subjects3.splice(index3, 1);
+        const index5 = this.subjects5.indexOf(this.subject4);
+        this.subjects5.splice(index5, 1);
+        this.results += 1;
+      }
+      if (this.result.result[4]) {
+        const index1 = this.subjects1.indexOf(this.subject5);
+        this.subjects1.splice(index1, 1);
+        const index2 = this.subjects2.indexOf(this.subject5);
+        this.subjects2.splice(index2, 1);
+        const index3 = this.subjects3.indexOf(this.subject5);
+        this.subjects3.splice(index3, 1);
+        const index4 = this.subjects4.indexOf(this.subject5);
+        this.subjects4.splice(index4, 1);
+        this.results += 1;
+      }
+    });
   },
   components: {
     MessagePopup
@@ -355,12 +452,67 @@ export default {
       e.preventDefault();
       this.checkNumber = true;
       if (this.isNumberValid && this.results > 0) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/zno/update`);
+        const body = {
+          old_number: this.result.number,
+          number: this.number, 
+          old_year: this.result.year, 
+          year: this.year, 
+          name: this.result.firstName, 
+          surname: this.result.lastName, 
+          patronymic: this.result.fatherName,
+          results: [
+            {
+              subject: this.subject1,
+              result: this.grade1
+            },
+            {
+              subject: this.subject2,
+              result: this.grade2
+            },
+            {
+              subject: this.subject3,
+              result: this.grade3
+            },
+            {
+              subject: this.subject4,
+              result: this.grade4
+            },
+            {
+              subject: this.subject5,
+              result: this.grade5
+            }
+          ]
+        };
+        console.log(body)
+        fetch(url, {method: 'PUT', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     updatePopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
+      this.$router.push({path: '/update-search-zno-certificate'});
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }

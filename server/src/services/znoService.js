@@ -42,4 +42,25 @@ const createOneYearZno = async(year, number, name, surname, patronymic, p_series
     }
 }
 
-module.exports = { getOneYearZno, createOneYearZno };
+const updateOneYearZno = async(old_number, number, old_year, year, results) => {
+    try {
+        const client = createConnection();
+        let person =  await client.query(`SELECT person_fk FROM zno WHERE year = '${old_year}' AND number = '${old_number}';`);
+        let person_id = person.rows[0].person_fk;
+        await client.query(`DELETE FROM zno WHERE year = '${old_year}' AND number = '${old_number}' AND person_fk = '${person_id}';`);
+        client.end();
+        results.forEach(async item => {
+            if(item.subject != 'Не вибрано')
+            {
+                const client1 = createConnection();
+                const subj_id = await client1.query(`SELECT subject_id FROM subjects WHERE subject = '${item.subject}';`);
+                await client1.query(`INSERT into zno (number, person_fk, subject_fk, result, year) VALUES ('${number}', ${person_id}, '${subj_id.rows[0].subject_id}', '${item.result}',  '${year}');`)
+                client1.end();
+            }
+        });
+    } catch (err) {
+        throw new SqlError(err.message)
+    }
+}
+
+module.exports = { getOneYearZno, createOneYearZno, updateOneYearZno };

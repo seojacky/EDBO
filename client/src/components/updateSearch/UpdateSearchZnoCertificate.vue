@@ -1,57 +1,67 @@
 <template>
   <div class="zno-certificates">
-    <h1>Пошук даних для редагування у Реєстрі сертифікатів зовнішнього незалежного оцінювання</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h3>Дані сертифіката</h3>
-      <select v-model="year">
-        <option>2021</option>
-        <option>2020</option>
-        <option>2019</option>
-        <option>2018</option>
-        <option>2017</option>
-        <option>2016</option>
-        <option>2015</option>
-        <option>2014</option>
-        <option>2013</option>
-        <option>2012</option>
-        <option>2011</option>
-        <option>2010</option>
-        <option>2009</option>
-        <option>2008</option>
-      </select>
-      <label>Номер*</label>
-      <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-      <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-        {{validateInputNumber('Номер', number, 'numberInput').message}}
-      </div> 
-      <label>Прізвище*</label>
-      <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
-      <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
-        {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
-      </div>
-      <label>Ім'я*</label>
-      <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
-      <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
-        {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
-      </div>
-      <label>По батькові</label>
-      <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
-      <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
-        {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
-      </div>
-      <input type="checkbox" v-on:click="handleCheckboxClick" />
-      <label>Підтверджую, по батькові відсутнє</label>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Пошук" />
-    </form>
+    <div v-if="role === 'registrator'">
+      <h1>Пошук даних для редагування у Реєстрі сертифікатів зовнішнього незалежного оцінювання</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h3>Дані сертифіката</h3>
+        <select v-model="year">
+          <option>2021</option>
+          <option>2020</option>
+          <option>2019</option>
+          <option>2018</option>
+          <option>2017</option>
+          <option>2016</option>
+          <option>2015</option>
+          <option>2014</option>
+          <option>2013</option>
+          <option>2012</option>
+          <option>2011</option>
+          <option>2010</option>
+          <option>2009</option>
+          <option>2008</option>
+        </select>
+        <label>Номер*</label>
+        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
+        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+          {{validateInputNumber('Номер', number, 'numberInput').message}}
+        </div> 
+        <label>Прізвище*</label>
+        <input type="text" class="valid" ref="lastNameInput" v-model="lastName" v-on:focusout="handleFocusoutLastName" />
+        <div class="error" v-if="checkLastName && validateInputName('Прізвище', lastName, 'lastNameInput')">
+          {{validateInputName('Прізвище', lastName, 'lastNameInput').message}}
+        </div>
+        <label>Ім'я*</label>
+        <input type="text" class="valid" ref="firstNameInput" v-model="firstName" v-on:focusout="handleFocusoutFirstName" />
+        <div class="error" v-if="checkFirstName && validateInputName('Ім\'я', firstName, 'firstNameInput')">
+          {{validateInputName('Ім\'я', firstName, 'firstNameInput').message}}
+        </div>
+        <label>По батькові</label>
+        <input type="text" class="valid" ref="fatherNameInput" v-model="fatherName" v-on:focusout="handleFocusoutFatherName" />
+        <div class="error" v-if="checkFatherName && validateInputName('По батькові', fatherName, 'fatherNameInput')">
+          {{validateInputName('По батькові', fatherName, 'fatherNameInput').message}}
+        </div>
+        <input type="checkbox" v-on:click="handleCheckboxClick" />
+        <label>Підтверджую, по батькові відсутнє</label>
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Пошук" />
+      </form>
+      <MessagePopup :isPopup="isErrorPopup" :message="error" @popup="updateErrorPopup" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
 <script>
 import Validation from './../../assets/validation.js'
+import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
-  name: 'ZnoCertificates',
+  name: 'UpdateSearchZnoCertificate',
+  components: {
+    MessagePopup
+  },
   data() {
     return {
       year: 2021,
@@ -67,8 +77,13 @@ export default {
       checkNumber: false,
       number: null,
       isNumberValid: false,
-      isPopup: false
+      error: '',
+      isErrorPopup: false,
+      role: null
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
   },
   methods: {
     handleFocusoutLastName() {
@@ -121,12 +136,44 @@ export default {
       }
       if (this.isLastNameValid && this.isFirstNameValid 
       && this.isFatherNameValid && this.isNumberValid) {
-        this.$router.push({path: '/update-zno-certificate'})
+        const url = new URL(`${window.location.origin}/api/zno`);
+        const params = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          number: this.number,
+          year: this.year
+        };
+        url.search = new URLSearchParams(params).toString();
+        fetch(url, {method: 'GET', headers: {'Content-Type': 'application/json'}})
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+           } else {
+             throw new Error('За вашим запитом нічого не знайдено.');
+           }
+         })
+         .then(data => {
+           console.log(data)
+            const result = {
+              certificateId: data.certificate_id,
+              year: data.year,
+              number: data.number,
+              firstName: data.name,
+              lastName: data.surname,
+              fatherName: data.patronymic,
+              result: data.result,
+            };
+            this.$router.push({ name: 'UpdateZnoCertificate', params: { result: result }});
+         })
+        .catch((error) => {
+          this.error = error.message;
+          this.isErrorPopup = true;
+        });
       }
     },
-    updatePopup(isPopup) {
+    updateErrorPopup(isPopup) {
       this.isPopup = isPopup;
-      this.$router.go(0);
     }
   }
 }

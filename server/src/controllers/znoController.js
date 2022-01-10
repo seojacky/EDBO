@@ -1,4 +1,4 @@
-const { getOneYearZno, createOneYearZno } = require('../services/znoService')
+const { getOneYearZno, createOneYearZno, updateOneYearZno } = require('../services/znoService')
 
 const getZno = async(req, res) => {
     const { year, number, name, surname, patronymic } = req.query;
@@ -27,9 +27,16 @@ const createZno = async(req, res) => {
     }
 }
 
-const updateZno = async(req, res) => {
-    res.json();
+const updateZno = async (req, res) => {
+    const { old_number, number, old_year, year, results } = req.body;
+    try {
+        await updateOneYearZno(old_number, number, old_year, year, results);
+        res.status(200).json({'message': 'successful'});
+    } catch (error) {
+        res.status(400).json({ error: error.message })
+    }
 }
+
 
 
 module.exports = { getZno, createZno, updateZno };
