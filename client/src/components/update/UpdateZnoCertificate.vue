@@ -1,94 +1,99 @@
 <template>
   <div class="zno-certificates">
-    <h1>Додати дані до Реєстру сертифікатів зовнішнього незалежного оцінювання</h1> 
-    <form method="GET" v-on:submit="handleSubmitForm">
-      <h2>{{this.result.lastName}} {{this.result.firstName}} {{this.result.fatherName}}</h2>
-      <h3>Дані сертифіката</h3>
-      <div class='zno-info'>
-        <select v-model="year">
-          <option>2021</option>
-          <option>2020</option>
-          <option>2019</option>
-          <option>2018</option>
-          <option>2017</option>
-          <option>2016</option>
-          <option>2015</option>
-          <option>2014</option>
-          <option>2013</option>
-          <option>2012</option>
-          <option>2011</option>
-          <option>2010</option>
-          <option>2009</option>
-          <option>2008</option>
-        </select>
-        <label>Номер*</label>
-        <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
-        <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
-          {{validateInputNumber('Номер', number, 'numberInput').message}}
+    <div v-if="role === 'registrator'">
+      <h1>Додати дані до Реєстру сертифікатів зовнішнього незалежного оцінювання</h1> 
+      <form method="GET" v-on:submit="handleSubmitForm">
+        <h2>{{this.result.lastName}} {{this.result.firstName}} {{this.result.fatherName}}</h2>
+        <h3>Дані сертифіката</h3>
+        <div class='zno-info'>
+          <select v-model="year">
+            <option>2021</option>
+            <option>2020</option>
+            <option>2019</option>
+            <option>2018</option>
+            <option>2017</option>
+            <option>2016</option>
+            <option>2015</option>
+            <option>2014</option>
+            <option>2013</option>
+            <option>2012</option>
+            <option>2011</option>
+            <option>2010</option>
+            <option>2009</option>
+            <option>2008</option>
+          </select>
+          <label>Номер*</label>
+          <input type="text" class="valid" ref="numberInput" v-model="number" v-on:focusout="handleFocusoutNumber" />   
+          <div class="error" v-if="checkNumber && validateInputNumber('Номер', number, 'numberInput')">
+            {{validateInputNumber('Номер', number, 'numberInput').message}}
+          </div>
         </div>
-      </div>
-      <h3>Результати</h3>
-      <div class="results">
-        <div class="subject">
-          <h4>Предмет 1</h4>
-          <select v-model="subject1"  v-on:change="handleSubjectChange1">
-            <option v-for="item in subjects1" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade1">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
+        <h3>Результати</h3>
+        <div class="results">
+          <div class="subject">
+            <h4>Предмет 1</h4>
+            <select v-model="subject1"  v-on:change="handleSubjectChange1">
+              <option v-for="item in subjects1" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade1">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 2</h4>
+            <select v-model="subject2"  v-on:change="handleSubjectChange2">
+              <option v-for="item in subjects2" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade2">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 3</h4>
+            <select v-model="subject3" v-on:change="handleSubjectChange3">
+              <option v-for="item in subjects3" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade3">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 4</h4>
+            <select v-model="subject4" v-on:change="handleSubjectChange4">
+              <option v-for="item in subjects4" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade4">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <div class="subject">
+            <h4>Предмет 5</h4>
+            <select v-model="subject5" v-on:change="handleSubjectChange5">
+              <option v-for="item in subjects5" v-bind:key="item">{{item}}</option>
+            </select>
+            <label style="margin-right: 10px">Бал</label>
+            <select style="width: 100px" v-model="grade5">
+              <option v-for="item in grades" v-bind:key="item">{{item}}</option>
+            </select>
+          </div>
+          <br/>
+          <div class="error" v-if="results === 0">
+            Потрібно додати не менше одного предмета
+          </div>
         </div>
-        <div class="subject">
-          <h4>Предмет 2</h4>
-          <select v-model="subject2"  v-on:change="handleSubjectChange2">
-            <option v-for="item in subjects2" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade2">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <div class="subject">
-          <h4>Предмет 3</h4>
-          <select v-model="subject3" v-on:change="handleSubjectChange3">
-            <option v-for="item in subjects3" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade3">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <div class="subject">
-          <h4>Предмет 4</h4>
-          <select v-model="subject4" v-on:change="handleSubjectChange4">
-            <option v-for="item in subjects4" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade4">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <div class="subject">
-          <h4>Предмет 5</h4>
-          <select v-model="subject5" v-on:change="handleSubjectChange5">
-            <option v-for="item in subjects5" v-bind:key="item">{{item}}</option>
-          </select>
-          <label style="margin-right: 10px">Бал</label>
-          <select style="width: 100px" v-model="grade5">
-            <option v-for="item in grades" v-bind:key="item">{{item}}</option>
-          </select>
-        </div>
-        <br/>
-        <div class="error" v-if="results === 0">
-          Потрібно додати не менше одного предмета
-        </div>
-      </div>
-      <h5>* обов'язкові поля</h5>
-      <input type="submit" value="Редагувати" />
-    </form>
-    <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів Зовнішнього незалежного оцінювання." />
-    <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+        <h5>* обов'язкові поля</h5>
+        <input type="submit" value="Редагувати" />
+      </form>
+      <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Введені Вами дані було оновлено у Реєстрі сертифікатів Зовнішнього незалежного оцінювання." />
+      <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
+    </div>
+    <div v-else>
+      <h2>403 Forbidden</h2>
+    </div>
   </div>
 </template>
 
