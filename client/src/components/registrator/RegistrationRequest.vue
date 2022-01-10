@@ -29,8 +29,16 @@
           </div>
           <label>Місце роботи*</label>
           <select v-model="organization">
-            <option>Місце роботи 1</option>
-            <option>Місце роботи 2</option>
+            <option>Київський університет імені Бориса Грінченка</option>
+            <option>Київський університет права Національної академії наук Україн</option>
+            <option>Київський університет туризму, економіки і права</option>
+            <option>Коледж Вищого навчального закладу "Київський університет ринкових відносин"</option>
+            <option>Міжнародний науково-навчальний центр інформаційних технологій та систем НАН України та МОН України</option>
+            <option>Національний авіаційний університет</option>
+            <option>Національний медичний університет імені О.О. Богомольця</option>
+            <option>Національний інститут стратегічних досліджень</option>
+            <option>Національний технічний університет України «Київський політехнічний інститут імені Ігоря Сікорського»</option>
+            <option>Національний університет біоресурсів і природокористування України</option>
           </select>
           <label>Посада*</label>
           <input type="text" class="valid" ref="positionInput" v-model="position" v-on:focusout="handleFocusoutPosition" />
@@ -88,6 +96,7 @@
       <input type="button" value="Скасувати" v-on:click="handleCancelClick" />
     </form>
     <MessagePopup :isPopup="isPopup" @popup="updatePopup" message="Ваш запит опрацьовується. На вказану Вами пошту буде надіслано логін та пароль після підтвердження Вашого запиту, або повідомлення про відхилення Вашого запиту." />
+    <MessagePopup :isPopup="isErrorPopup" @popup="updateErrorPopup" :message="error" />
   </div>
 </template>
 
@@ -97,9 +106,6 @@ import MessagePopup from './../popup/MessagePopup.vue'
 
 export default {
   name: 'RegistrationRequest',
-  components: {
-    MessagePopup
-  },
   data() {
     return {
       lastName: null,
@@ -136,8 +142,16 @@ export default {
       isPassportDateValid: null,
       isPassportSeriesValid: null,
       isPopup: false,
-      organization: 'Місце роботи 1',
+      isErrorPopup: false,
+      role: null,
+      organization: 'Київський університет імені Бориса Грінченка',
     }
+  },
+  mounted() {
+    this.role = localStorage.getItem('role');
+  },
+  components: {
+    MessagePopup
   },
   methods: {
     handleFocusoutLastName() {
@@ -284,7 +298,42 @@ export default {
         && this.isDateOfBirthValid && this.isPositionValid && this.isEmailValid
         && this.isPassportNumberValid && this.isPassportOrganizationValid && this.isPassportDateValid
         && this.isPassportSeriesValid && this.isTaxNumberValid ) {
-        this.isPopup = true;
+        const url = new URL(`${window.location.origin}/api/registrators/query`);
+        const body = {
+          name: this.firstName,
+          surname: this.lastName,
+          patronymic: this.fatherName ? this.fatherName : '',
+          birthday_date: this.dateOfBirth, 
+          issue_date: this.passportDate, 
+          p_series: this.passportSeries ? this.passportSeries : '', 
+          p_number: this.passportNumber,
+          authority_code: this.passportOrganization,
+          email: this.email, 
+          identification_code: this.taxNumber, 
+          position: this.position, 
+          organization_name: this.organization,
+        };
+        console.log(body)
+        fetch(url, {method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(body)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            throw new Error(data.error);
+          } else {
+            this.isPopup = true;
+          }
+        })
+        .catch((error) => {
+          this.error = error.message;
+          console.log(error.message)
+          this.isErrorPopup = true;
+        });
       }
     },
     handleCancelClick() {
@@ -293,6 +342,9 @@ export default {
     updatePopup(isPopup) {
       this.isPopup = isPopup;
       this.$router.push('/login');
+    },
+    updateErrorPopup(isErrorPopup) {
+      this.isErrorPopup = isErrorPopup;
     }
   }
 }
